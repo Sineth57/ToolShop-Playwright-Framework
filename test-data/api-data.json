@@ -1,0 +1,15 @@
+{
+  "maxResponseMs": 4000,
+  "pages": [1, 2, 3],
+  "priceRanges": [
+    { "min": 1, "max": 50 },
+    { "min": 10, "max": 100 },
+    { "min": 50, "max": 200 }
+  ],
+  "searchTerms": ["hammer", "pliers", "saw"],
+  "unknownIds": ["00000000000000000000000000", "invalid-id", "999999"],
+  "contactMessage": {
+    "subject": "customer-service",
+    "message": "I would like to ask about the delivery time of the tools I plan to order next week."
+  }
+}
