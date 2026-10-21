@@ -16,19 +16,14 @@ permissions:
 
 env:
   CI: true
-  BASE_URL: http://localhost:4200
-  API_URL: http://localhost:8091
-  # Public seeded accounts of the practice application, not real secrets
-  USER_EMAIL: customer@practicesoftwaretesting.com
-  USER_PASSWORD: welcome01
-  ADMIN_EMAIL: admin@practicesoftwaretesting.com
-  ADMIN_PASSWORD: welcome01
+  # No BASE_URL / API_URL here: the framework defaults to the public Toolshop site
+  # (https://practicesoftwaretesting.com and https://api.practicesoftwaretesting.com)
 
 jobs:
   test:
     name: ${{ matrix.project }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     strategy:
       fail-fast: false # one failing browser must not stop the others
       matrix:
@@ -46,12 +41,6 @@ jobs:
       - name: Check out the framework
         uses: actions/checkout@v4
 
-      - name: Check out the Practice Software Testing application
-        uses: actions/checkout@v4
-        with:
-          repository: testsmith-io/practice-software-testing
-          path: practice-repo
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -64,80 +53,6 @@ jobs:
       - name: Install browsers
         if: matrix.browsers != ''
         run: npx playwright install --with-deps ${{ matrix.browsers }}
-
-      - name: Show where the application image installs PECL extensions
-        working-directory: practice-repo
-        run: grep -rn "pecl" --include='*.docker' --include='Dockerfile*' . || true
-
-      - name: Build the application images (with retries)
-        working-directory: practice-repo
-        run: |
-          for i in 1 2 3; do
-            if docker compose build; then
-              exit 0
-            fi
-            echo "Build failed (attempt $i of 3), retrying in 30 s"
-            sleep 30
-          done
-          echo "The application images could not be built"
-          exit 1
-
-      - name: Start the application with Docker Compose
-        working-directory: practice-repo
-        run: docker compose up -d
-
-      - name: Wait for the API and the website
-        run: |
-          wait_for() {
-            local name="$1" url="$2"
-            for i in $(seq 1 60); do
-              code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
-              if [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ]; then
-                echo "$name is up (HTTP $code)"
-                return 0
-              fi
-              echo "Waiting for $name ($i/60), last status: $code"
-              sleep 10
-            done
-            echo "$name did not start in time"
-            return 1
-          }
-          wait_for "API" "http://localhost:8091/status"
-          wait_for "website" "http://localhost:4200"
-
-      - name: Make sure the PHP dependencies are installed
-        working-directory: practice-repo
-        run: |
-          for i in $(seq 1 30); do
-            if docker compose exec -T laravel-api test -f vendor/autoload.php; then
-              echo "vendor/autoload.php found"
-              exit 0
-            fi
-            echo "vendor/autoload.php not there yet ($i/30)"
-            sleep 10
-          done
-          echo "Installing the dependencies manually"
-          docker compose exec -T laravel-api composer install --no-interaction --prefer-dist
-
-      - name: Create and seed the database
-        working-directory: practice-repo
-        run: |
-          for i in 1 2 3 4 5 6; do
-            if docker compose exec -T laravel-api php artisan migrate:fresh --seed; then
-              exit 0
-            fi
-            echo "Seeding failed (attempt $i), retrying in 15 s"
-            sleep 15
-          done
-          echo "Seeding failed after 6 attempts"
-          exit 1
-
-      - name: Check that the application answers
-        run: |
-          curl -fsS http://localhost:8091/products > /dev/null
-          curl -fsS -X POST http://localhost:8091/users/login \
-            -H 'Content-Type: application/json' \
-            --data-raw '{"email":"customer@practicesoftwaretesting.com","password":"welcome01"}' > /dev/null
 
       - name: Run the ${{ matrix.project }} tests
         run: npx playwright test --project=${{ matrix.project }}
@@ -168,16 +83,6 @@ jobs:
           path: test-results
           if-no-files-found: ignore
           retention-days: 7
-
-      - name: Show the application logs
-        if: failure()
-        working-directory: practice-repo
-        run: docker compose logs --tail 100
-
-      - name: Stop the application
-        if: always()
-        working-directory: practice-repo
-        run: docker compose down --remove-orphans
 
   report:
     name: Allure report
