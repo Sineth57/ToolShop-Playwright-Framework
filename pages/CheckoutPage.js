@@ -4,14 +4,14 @@ class CheckoutPage {
   constructor(page) {
     this.page = page;
 
-    // Step 2: sign in (shown to guests) and the "continue" button
+    // Step 2 - sign in (shown to guests) and the "continue" button
     this.email = page.getByTestId('email');
     this.password = page.getByTestId('password');
     this.loginSubmit = page.getByTestId('login-submit');
     this.loginError = page.getByTestId('login-error');
     this.proceedFromSignIn = page.getByTestId('proceed-2');
 
-    // Step 3: billing address
+    // Step 3 - billing address
     this.country = page.getByTestId('country');
     this.postalCode = page.getByTestId('postal_code');
     this.houseNumber = page.getByTestId('house_number');
@@ -20,7 +20,7 @@ class CheckoutPage {
     this.state = page.getByTestId('state');
     this.proceedFromAddress = page.getByTestId('proceed-3');
 
-    // Step 4: payment
+    // Step 4 - payment
     this.paymentMethod = page.getByTestId('payment-method');
     this.bankName = page.getByTestId('bank_name');
     this.accountName = page.getByTestId('account_name');

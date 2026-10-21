@@ -16,14 +16,12 @@ permissions:
 
 env:
   CI: true
-  # No BASE_URL / API_URL here: the framework defaults to the public Toolshop site
-  # (https://practicesoftwaretesting.com and https://api.practicesoftwaretesting.com)
 
 jobs:
   test:
     name: ${{ matrix.project }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false # one failing browser must not stop the others
       matrix:
@@ -54,8 +52,104 @@ jobs:
         if: matrix.browsers != ''
         run: npx playwright install --with-deps ${{ matrix.browsers }}
 
+      # ---- Local copy of the Toolshop app (browser jobs only, avoids the Cloudflare bot check) ----
+      - name: Check out the Practice Software Testing application
+        if: matrix.project != 'api'
+        uses: actions/checkout@v4
+        with:
+          repository: testsmith-io/practice-software-testing
+          path: practice-repo
+
+      - name: Build the application images (with retries)
+        if: matrix.project != 'api'
+        working-directory: practice-repo
+        run: |
+          for i in 1 2 3; do
+            if docker compose build; then
+              exit 0
+            fi
+            echo "Build failed (attempt $i of 3), retrying in 30 s"
+            sleep 30
+          done
+          echo "The application images could not be built"
+          exit 1
+
+      - name: Start the application with Docker Compose
+        if: matrix.project != 'api'
+        working-directory: practice-repo
+        run: docker compose up -d
+
+      - name: Wait for the API and the website
+        if: matrix.project != 'api'
+        run: |
+          wait_for() {
+            local name="$1" url="$2"
+            for i in $(seq 1 60); do
+              code=$(curl -s -o /dev/null -w '%{http_code}' "$url" || true)
+              if [ "$code" != "000" ] && [ "$code" != "502" ] && [ "$code" != "503" ]; then
+                echo "$name is up (HTTP $code)"
+                return 0
+              fi
+              echo "Waiting for $name ($i/60), last status: $code"
+              sleep 10
+            done
+            echo "$name did not start in time"
+            return 1
+          }
+          wait_for "API" "http://localhost:8091/status"
+          wait_for "website" "http://localhost:4200"
+
+      - name: Make sure the PHP dependencies are installed
+        if: matrix.project != 'api'
+        working-directory: practice-repo
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose exec -T laravel-api test -f vendor/autoload.php; then
+              echo "vendor/autoload.php found"
+              exit 0
+            fi
+            echo "vendor/autoload.php not there yet ($i/30)"
+            sleep 10
+          done
+          echo "Installing the dependencies manually"
+          docker compose exec -T laravel-api composer install --no-interaction --prefer-dist
+
+      - name: Create and seed the database
+        if: matrix.project != 'api'
+        working-directory: practice-repo
+        run: |
+          docker compose ps
+          for i in $(seq 1 10); do
+            if docker compose exec -T laravel-api php artisan migrate:fresh --seed; then
+              exit 0
+            fi
+            echo "Seeding failed (attempt $i of 10), retrying in 15 s"
+            sleep 15
+          done
+          echo "Seeding failed after 10 attempts"
+          echo "----- Laravel log -----"
+          docker compose exec -T laravel-api sh -c 'tail -n 80 storage/logs/laravel.log' || true
+          echo "----- Selected .env settings (no passwords) -----"
+          docker compose exec -T laravel-api sh -c 'ls -la .env; grep -E "^(APP_ENV|DB_CONNECTION|DB_HOST|DB_DATABASE|DB_USERNAME)=" .env; grep -c "^APP_KEY=.\+" .env' || true
+          echo "----- Containers -----"
+          docker compose ps -a
+          exit 1
+
+      - name: Check that the application answers
+        if: matrix.project != 'api'
+        run: |
+          curl -fsS http://localhost:8091/products > /dev/null
+          curl -fsS -X POST http://localhost:8091/users/login \
+            -H 'Content-Type: application/json' \
+            --data-raw '{"email":"customer@practicesoftwaretesting.com","password":"welcome01"}' > /dev/null
+
+      # ---- Run the tests ----
       - name: Run the ${{ matrix.project }} tests
         run: npx playwright test --project=${{ matrix.project }}
+        env:
+          # Browser jobs test the local app; the api job keeps the public API (empty = framework default)
+          BASE_URL: ${{ matrix.project != 'api' && 'http://localhost:4200' || '' }}
+          API_URL: ${{ matrix.project != 'api' && 'http://localhost:8091' || '' }}
 
       - name: Upload Allure results
         if: always()
@@ -83,6 +177,16 @@ jobs:
           path: test-results
           if-no-files-found: ignore
           retention-days: 7
+
+      - name: Show the application logs
+        if: failure() && matrix.project != 'api'
+        working-directory: practice-repo
+        run: docker compose logs --tail 100
+
+      - name: Stop the application
+        if: always() && matrix.project != 'api'
+        working-directory: practice-repo
+        run: docker compose down --remove-orphans
 
   report:
     name: Allure report
