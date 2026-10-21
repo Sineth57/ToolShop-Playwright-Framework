@@ -15,6 +15,10 @@
   "test:ui:negative": "playwright test tests/ui/negative",
   "test:api:positive": "playwright test tests/api/positive",
   "test:api:negative": "playwright test tests/api/negative",
+  "test:allure": "node -e \"for (const d of ['allure-results','allure-report']) require('fs').rmSync(d,{recursive:true,force:true})\" && playwright test",
+  "allure:generate": "allure generate ./allure-results",
+  "allure:open": "allure open ./allure-report",
+  "allure:report": "npm run allure:generate && npm run allure:open",
   "report": "playwright show-report"
 },
   "keywords": [],
@@ -25,6 +29,8 @@
     "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "ajv": "^8.20.0",
+    "allure": "^3.21.0",
+    "allure-playwright": "^3.14.0",
     "dotenv": "^18.0.8"
   }
 }

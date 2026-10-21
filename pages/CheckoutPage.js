@@ -78,6 +78,30 @@ class CheckoutPage {
   async confirm() {
     await this.finish.click();
   }
+
+  // Records every payment and invoice request the page sends: the status the API answered, the
+  // data sent to /invoices (billing address and payment details) and the error text of failed
+  // calls. Returns the list, which fills up as requests happen.
+  trackOrderRequests() {
+    const calls = [];
+    this.page.on('response', (response) => {
+      const request = response.request();
+      const { pathname } = new URL(response.url());
+      if (request.method() !== 'POST' || !/\/(invoices|payment)/.test(pathname)) return;
+
+      const call = { line: `${response.status()} POST ${pathname}`, detail: '', ready: Promise.resolve() };
+      calls.push(call);
+
+      const sent = pathname.includes('/invoices') ? (request.postData() || '').slice(0, 600) : '';
+      call.ready = (async () => {
+        const received = response.status() >= 400 ? (await response.text().catch(() => '')).slice(0, 600) : '';
+        call.detail = [sent && `  sent:     ${sent}`, received && `  received: ${received}`]
+          .filter(Boolean)
+          .join('\n');
+      })();
+    });
+    return calls;
+  }
 }
 
 module.exports = { CheckoutPage };

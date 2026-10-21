@@ -13,7 +13,7 @@ class CartPage {
 
   async goto() {
     await this.page.goto('/checkout');
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForURL(/checkout/);
   }
 
   async open() {

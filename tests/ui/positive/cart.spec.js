@@ -26,8 +26,8 @@ test.describe('Cart (positive)', () => {
       .toBeCloseTo(cartWithProduct.price, 2);
   });
 
-  test('the cart total is the sum of two products', async ({ cartWithProduct, products, productPage, cartPage }) => {
-    const [, second] = await products.firstProducts(2);
+  test('the cart total is the sum of two products', async ({ cartWithProduct, catalogue, productPage, cartPage }) => {
+    const second = catalogue[1];
     await productPage.goto(second.id);
     await productPage.addToCart(2);
 

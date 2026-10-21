@@ -11,7 +11,7 @@ test.describe('Checkout (negative)', () => {
 
   for (const { field, key } of data.checkout.requiredAddressFields) {
     test(`cannot continue to payment with an empty ${field}`, async ({ checkoutPage }) => {
-      // A complete address enables the button...
+      
       await checkoutPage.fillBillingAddress(data.checkout.address);
       await checkoutPage.waitForValidAddress();
 

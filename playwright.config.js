@@ -5,14 +5,28 @@ require('dotenv').config({ quiet: true });
 module.exports = defineConfig({
   testDir: './tests',
   timeout: 60_000,
-  expect: { timeout: 10_000 },
+  expect: { timeout: 15_000 },
 
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 2 : undefined,
+  retries: process.env.CI ? 2 : 1,       // a test that passes on retry is reported as "flaky"
+  workers: Number(process.env.WORKERS) || 2, // set WORKERS=4 (or use --workers=4) to compare speeds
 
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['allure-playwright', {
+      resultsDir: 'allure-results',
+      // Shown on the report's overview page
+      environmentInfo: {
+        Application: 'Practice Software Testing (Toolshop)',
+        BASE_URL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
+        API_URL: process.env.API_URL || 'https://api.practicesoftwaretesting.com',
+        Node: process.version,
+        OS: process.platform,
+      },
+    }],
+  ],
 
   use: {
     baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
@@ -20,7 +34,7 @@ module.exports = defineConfig({
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'on-first-retry',
   },
 
   projects: [

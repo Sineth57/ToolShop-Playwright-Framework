@@ -14,6 +14,17 @@ const { API_URL } = require('../utils/env');
 const { USER_FILE } = require('../utils/paths');
 
 const test = base.test.extend({
+  // The first two catalogue products, read from the API once per worker and shared by its tests
+  catalogue: [
+    async ({ playwright }, use) => {
+      const context = await playwright.request.newContext({ baseURL: API_URL });
+      const products = await new ProductsApi(context).firstProducts(2);
+      await use(products);
+      await context.dispose();
+    },
+    { scope: 'worker', timeout: 60_000 },
+  ],
+
   // Page Objects
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -58,14 +69,14 @@ const test = base.test.extend({
     await use(user);
   },
 
-  // The first product of the catalogue, read from the API
-  product: async ({ products }, use) => {
-    await use(await products.firstProduct());
+  // The first product of the catalogue
+  product: async ({ catalogue }, use) => {
+    await use(catalogue[0]);
   },
 
-  // A cart that already holds one product (chosen through the API, added through the UI)
-  cartWithProduct: async ({ productPage, products }, use) => {
-    const [product] = await products.firstProducts(1);
+  // A cart that already holds one product (chosen from the catalogue, added through the UI)
+  cartWithProduct: async ({ productPage, catalogue }, use) => {
+    const [product] = catalogue;
     await productPage.goto(product.id);
     await productPage.addToCart();
     await use(product);
