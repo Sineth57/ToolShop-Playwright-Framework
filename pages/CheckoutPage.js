@@ -56,7 +56,12 @@ class CheckoutPage {
   }
 
   // The Proceed button stays disabled until the address is complete (including the autofilled part)
-  async waitForValidAddress() {
+  // async waitForValidAddress() {
+  //   await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
+  // }
+
+    async waitForValidAddress() {
+    await expect(this.city).not.toHaveValue('Colombo', { timeout: 30_000 });
     await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
   }
 
