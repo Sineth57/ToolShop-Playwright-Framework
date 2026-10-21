@@ -105,6 +105,20 @@ jobs:
           wait_for "API" "http://localhost:8091/status"
           wait_for "website" "http://localhost:4200"
 
+      - name: Make sure the PHP dependencies are installed
+        working-directory: practice-repo
+        run: |
+          for i in $(seq 1 30); do
+            if docker compose exec -T laravel-api test -f vendor/autoload.php; then
+              echo "vendor/autoload.php found"
+              exit 0
+            fi
+            echo "vendor/autoload.php not there yet ($i/30)"
+            sleep 10
+          done
+          echo "Installing the dependencies manually"
+          docker compose exec -T laravel-api composer install --no-interaction --prefer-dist
+
       - name: Create and seed the database
         working-directory: practice-repo
         run: |
