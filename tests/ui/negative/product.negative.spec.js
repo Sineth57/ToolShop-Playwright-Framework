@@ -4,14 +4,12 @@ test.describe('Product page (negative)', () => {
   test('the minus button does not go below 1', async ({ productPage, product }) => {
     await productPage.goto(product.id);
     await productPage.decreaseButton.click();
-
     await expect(productPage.quantity).toHaveValue('1');
   });
 
   test('a guest cannot add a product to favorites', async ({ productPage, product }) => {
     await productPage.goto(product.id);
     await productPage.addToFavoritesButton.click();
-
     await expect(productPage.favoritesError).toBeVisible();
   });
 

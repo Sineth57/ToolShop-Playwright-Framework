@@ -1,0 +1,44 @@
+{
+  "login": {
+    "invalidEmails": [
+      { "name": "an address without @", "value": "plainaddress" },
+      { "name": "an address without a name", "value": "@no-name.com" },
+      { "name": "an address without a domain", "value": "no-domain@" },
+      { "name": "an address with two @ signs", "value": "two@@signs.com" },
+      { "name": "an address with spaces", "value": "spaces in@address.com" },
+      { "name": "SQL text", "value": "' OR '1'='1" },
+      { "name": "script text", "value": "<script>alert(1)</script>" }
+    ],
+    "attackPasswords": [
+      { "name": "SQL injection text", "value": "' OR '1'='1" },
+      { "name": "a script tag", "value": "<script>alert(1)</script>" },
+      { "name": "an image tag with an error handler", "value": "\"><img src=x onerror=alert(1)>" }
+    ]
+  },
+  "register": {
+    "invalidEmails": [
+      { "name": "an address without @", "value": "plainaddress" },
+      { "name": "an address without a name", "value": "@no-name.com" },
+      { "name": "an address without a domain", "value": "no-domain@" },
+      { "name": "an address with two @ signs", "value": "two@@signs.com" },
+      { "name": "an address with spaces", "value": "spaces in@address.com" }
+    ],
+    "weakPasswords": [
+      { "name": "a password that is too short", "value": "Ab1!" },
+      { "name": "a password without capital letters", "value": "lowercase1!" },
+      { "name": "a password without a number", "value": "NoNumbers!!" },
+      { "name": "a password without a special character", "value": "NoSpecial123" },
+      { "name": "a password made only of digits", "value": "12345678" }
+    ],
+    "invalidDates": [
+      { "name": "a date in the future", "value": "2999-01-01" },
+      { "name": "a date more than 150 years ago", "value": "1800-01-01" }
+    ],
+    "invalidPostalCodes": [
+      { "name": "a German postal code with 4 digits", "country": "DE", "value": "1234" },
+      { "name": "an Austrian postal code with 5 digits", "country": "AT", "value": "12345" },
+      { "name": "a Swiss postal code with 3 digits", "country": "CH", "value": "123" }
+    ],
+    "phoneWithLetters": "abcdefghij"
+  }
+}

@@ -1,0 +1,172 @@
+
+Running 77 tests using 2 workers
+
+  ✓   1 [setup] › tests\setup\auth.setup.js:9:1 › create a user and save the logged-in browser session (6.8s)
+[message] login: empty email: "Email is required"
+  ✓   3 [chromium] › tests\ui\negative\login.negative.spec.js:17:5 › Login (negative) › required fields › an empty email shows only the email error (2.1s)
+  ✓   2 [chromium] › tests\ui\negative\login.negative.spec.js:11:5 › Login (negative) › required fields › submitting an empty form shows required errors (2.2s)
+[message] login: only spaces: "Email is required"
+  ✓   5 [chromium] › tests\ui\negative\login.negative.spec.js:33:5 › Login (negative) › required fields › fields that contain only spaces are refused (3.9s)
+[message] login: empty password: "Password is required"
+  ✓   4 [chromium] › tests\ui\negative\login.negative.spec.js:25:5 › Login (negative) › required fields › an empty password shows only the password error (4.9s)
+  ✓   6 [chromium] › tests\ui\negative\login.negative.spec.js:40:5 › Login (negative) › required fields › pressing Enter on an empty form shows the required errors (2.1s)
+  ✓   7 [chromium] › tests\ui\negative\login.negative.spec.js:47:5 › Login (negative) › required fields › an error disappears once the field is corrected (2.4s)
+  ✓   8 [chromium] › tests\ui\negative\login.negative.spec.js:58:5 › Login (negative) › invalid email formats › an invalid email format shows an email error (1.5s)
+[message] login: invalid email (an address without a name): "Email format is invalid"
+  ✓  10 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › an address without a name is refused as the email (5.7s)
+[message] login: invalid email (an address without @): "Email format is invalid"
+  ✓   9 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › an address without @ is refused as the email (6.4s)
+[message] login: invalid email (an address with two @ signs): "Email format is invalid"
+  ✓  12 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › an address with two @ signs is refused as the email (2.3s)
+[message] login: invalid email (an address without a domain): "Email format is invalid"
+  ✓  11 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › an address without a domain is refused as the email (2.9s)
+[message] login: invalid email (an address with spaces): "Email format is invalid"
+  ✓  13 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › an address with spaces is refused as the email (2.8s)
+[message] login: invalid email (SQL text): "Email format is invalid"
+  ✓  14 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › SQL text is refused as the email (3.3s)
+[message] login: invalid email (script text): "Email format is invalid"
+  ✓  15 [chromium] › tests\ui\negative\login.negative.spec.js:64:7 › Login (negative) › invalid email formats › script text is refused as the email (3.6s)
+  ✓  16 [chromium] › tests\ui\negative\login.negative.spec.js:74:5 › Login (negative) › wrong credentials › a wrong password shows an error and stays on the login page (3.6s)
+  ✓  17 [chromium] › tests\ui\negative\login.negative.spec.js:80:5 › Login (negative) › wrong credentials › an unknown email shows an error (3.1s)
+[message] login: wrong password: "Invalid email or password"
+[message] login: unknown email: "Invalid email or password"
+  ✓  18 [chromium] › tests\ui\negative\login.negative.spec.js:86:5 › Login (negative) › wrong credentials › a wrong password and an unknown email show the same message (4.1s)
+  ✓  19 [chromium] › tests\ui\negative\login.negative.spec.js:98:5 › Login (negative) › wrong credentials › the typed email is kept after a failed login (3.7s)
+  ✓  20 [chromium] › tests\ui\negative\login.negative.spec.js:105:5 › Login (negative) › wrong credentials › a failed login stores no access token in the browser (3.7s)
+  ✓  21 [chromium] › tests\ui\negative\login.negative.spec.js:119:5 › Login (negative) › wrong credentials › the typed email and password never appear in the address bar (2.5s)
+  ✓  23 [chromium] › tests\ui\negative\login.negative.spec.js:148:7 › Login (negative) › hostile and extreme input › SQL injection text in the password is refused and does not run (8.6s)
+[message] login: locked account: "Account locked, too many failed attempts. Please contact the administrator."
+  ✓  22 [chromium] › tests\ui\negative\login.negative.spec.js:127:5 › Login (negative) › wrong credentials › a locked account cannot log in through the form, even with the right password (11.5s)
+  ✓  24 [chromium] › tests\ui\negative\login.negative.spec.js:148:7 › Login (negative) › hostile and extreme input › a script tag in the password is refused and does not run (5.8s)
+[message] login: very long input: "Email format is invalid"
+  ✓  26 [chromium] › tests\ui\negative\login.negative.spec.js:159:5 › Login (negative) › hostile and extreme input › a very long email and password are refused without breaking the page (2.3s)
+  ✓  25 [chromium] › tests\ui\negative\login.negative.spec.js:148:7 › Login (negative) › hostile and extreme input › an image tag with an error handler in the password is refused and does not run (7.0s)
+  ✓  27 [chromium] › tests\ui\negative\login.negative.spec.js:168:5 › Login (negative) › password field › the password is hidden while typing (2.1s)
+  ✓  28 [chromium] › tests\ui\negative\login.negative.spec.js:174:5 › Login (negative) › password field › the eye button shows and hides the password (2.0s)
+  ✓  29 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for first name (2.5s)
+  ✓  30 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for last name (2.0s)
+  ✓  31 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for date of birth (3.6s)
+  ✓  32 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for postal code (4.9s)
+  ✓  33 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for house number (3.0s)
+  ✓  34 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for street (2.0s)
+  ✓  35 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for city (3.5s)
+  ✓  36 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for state (3.9s)
+  ✓  37 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for phone (2.1s)
+  ✓  39 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for password (2.5s)
+  ✓  38 [chromium] › tests\ui\negative\register.negative.spec.js:26:7 › Registration (negative) › required fields › an empty form shows a required error for email (4.3s)
+[message] register: empty first name: "First name is required"
+  ✓  40 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the first name empty shows its error (2.0s)
+[message] register: empty last name: "Last name is required"
+  ✓  41 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the last name empty shows its error (2.3s)
+[message] register: empty date of birth: "Please enter a valid date in YYYY-MM-DD format. Date of Birth is required"
+  ✓  42 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the date of birth empty shows its error (3.4s)
+[message] register: empty postal code: "Postcode is required"
+  ✓  43 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the postal code empty shows its error (3.9s)
+[message] register: empty house number: "House number is required"
+  ✓  44 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the house number empty shows its error (6.0s)
+[message] register: empty city: "City is required"
+  ✓  46 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the city empty shows its error (2.2s)
+[message] register: empty state: "State is required"
+  ✓  47 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the state empty shows its error (2.0s)
+[message] register: empty phone: "Phone is required."
+  ✓  48 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the phone empty shows its error (2.3s)
+[message] register: empty email: "Email is required"
+  ✓  49 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the email empty shows its error (3.0s)
+[message] register: empty street: "Street is required"
+  ✓  45 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the street empty shows its error (15.2s)
+[message] register: empty password: "Password is required Password must be minimal 6 characters long. Password can not include invalid characters."
+  ✓  50 [chromium] › tests\ui\negative\register.negative.spec.js:35:7 › Registration (negative) › required fields › leaving only the password empty shows its error (2.2s)
+  ✘  51 [chromium] › tests\ui\negative\register.negative.spec.js:45:5 › Registration (negative) › required fields › an error disappears once the field is filled in (1.4s)
+  ✘  52 [chromium] › tests\ui\negative\register.negative.spec.js:54:5 › Registration (negative) › required fields › pressing Enter on an empty form shows the required errors (494ms)
+Terminate batch job (Y/N)? 
+
+  1) [chromium] › tests\ui\negative\register.negative.spec.js:45:5 › Registration (negative) › required fields › an error disappears once the field is filled in 
+
+    Test was interrupted.
+
+    Error: page.goto: Target page, context or browser has been closed
+    Call log:
+      - navigating to "https://practicesoftwaretesting.com/auth/register", waiting until "load"
+
+
+       at ..\pages\RegisterPage.js:27
+
+      25 |
+      26 |   async goto() {
+    > 27 |     await this.page.goto('/auth/register');
+         |                     ^
+      28 |   }
+      29 |
+      30 |   // Locator for any input, e.g. field('postal_code')
+        at RegisterPage.goto (E:\QA Preparation\Fidenz Assignments\Assignment 6 Playwright Test Automation\pages\RegisterPage.js:27:21)
+        at E:\QA Preparation\Fidenz Assignments\Assignment 6 Playwright Test Automation\tests\ui\negative\register.negative.spec.js:21:24
+
+    Error: browserContext.close: Target page, context or browser has been closed
+
+    Error Context: test-results\ui-negative-register.negat-84547-once-the-field-is-filled-in-chromium\error-context.md
+
+  2) [chromium] › tests\ui\negative\register.negative.spec.js:54:5 › Registration (negative) › required fields › pressing Enter on an empty form shows the required errors 
+
+    Test was interrupted.
+
+    Error: page.goto: net::ERR_ABORTED at https://practicesoftwaretesting.com/auth/register
+    Call log:
+      - navigating to "https://practicesoftwaretesting.com/auth/register", waiting until "load"
+
+
+       at ..\pages\RegisterPage.js:27
+
+      25 |
+      26 |   async goto() {
+    > 27 |     await this.page.goto('/auth/register');
+         |                     ^
+      28 |   }
+      29 |
+      30 |   // Locator for any input, e.g. field('postal_code')
+        at RegisterPage.goto (E:\QA Preparation\Fidenz Assignments\Assignment 6 Playwright Test Automation\pages\RegisterPage.js:27:21)
+        at E:\QA Preparation\Fidenz Assignments\Assignment 6 Playwright Test Automation\tests\ui\negative\register.negative.spec.js:21:24
+
+    Error: browserContext.close: Test ended.
+    Browser logs:
+
+    <launching> C:\Users\User St\AppData\Local\ms-playwright\chromium_headless_shell-1248\chrome-headless-shell-win64\chrome-headless-shell.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,AvoidCorsURLLoaderRestartOnRedirect,Translate,AutoDeElevate,OptimizationHints,NetworkTimeServiceQuerying,AimEnabled,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --user-data-dir=E:\temp\playwright_chromiumdev_profile-I8PZHB --remote-debugging-pipe --no-startup-window
+    <launched> pid=9068
+    [pid=9068][err] [1021/134757.257:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134803.648:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134805.758:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134808.873:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134812.118:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134815.233:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134817.412:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134820.989:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134829.349:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134835.326:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134838.200:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134840.580:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134842.917:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134846.985:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134849.940:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134855.558:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134859.777:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134902.735:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134909.312:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134911.847:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134913.808:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134916.348:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134918.433:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+    [pid=9068][err] [1021/134921.347:INFO:CONSOLE:7] "ERROR [object Object]", source: https://practicesoftwaretesting.com/chunk-XPTZBBTO.js (7)
+
+    Error Context: test-results\ui-negative-register.negat-3bc7c-m-shows-the-required-errors-chromium\error-context.md
+
+  2 interrupted
+    [chromium] › tests\ui\negative\register.negative.spec.js:45:5 › Registration (negative) › required fields › an error disappears once the field is filled in 
+    [chromium] › tests\ui\negative\register.negative.spec.js:54:5 › Registration (negative) › required fields › pressing Enter on an empty form shows the required errors 
+  25 did not run
+  50 passed (1.7m)
+
+To open last HTML report run:
+[36m[39m
+[36m  npx playwright show-report[39m
+[36m[39m
+
+^C

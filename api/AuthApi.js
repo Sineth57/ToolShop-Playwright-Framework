@@ -18,7 +18,7 @@ class AuthApi {
     return { Authorization: `Bearer ${token}` };
   }
 
-  // Logs in and returns the bearer token, failing with the server's reply if it can't
+  // Login and returns the bearer token, failing with the server reply if it can't
   async getToken(email, password) {
     const response = await this.login(email, password);
     const text = await response.text();
@@ -29,7 +29,7 @@ class AuthApi {
     return body.access_token;
   }
 
-  // Creates a brand-new user, logs in, and returns both
+  // creates a new user, logs in, and returns both
   async registerAndLogin(overrides = {}) {
     const user = buildUserPayload(overrides);
     const response = await this.register(user);

@@ -17,7 +17,7 @@ class ContactPage {
     await this.page.goto('/contact');
   }
 
-  // locator for a validation message > email-error
+  // locator for a validation message > email error
   error(field) {
     return this.page.getByTestId(`${field}-error`);
   }

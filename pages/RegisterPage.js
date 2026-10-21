@@ -1,6 +1,7 @@
 class RegisterPage {
   constructor(page) {
     this.page = page;
+    this.form = page.getByTestId('register-form');
     this.firstName = page.getByTestId('first-name');
     this.lastName = page.getByTestId('last-name');
     this.dob = page.getByTestId('dob');
@@ -14,13 +15,24 @@ class RegisterPage {
     this.email = page.getByTestId('email');
     this.password = page.getByTestId('password');
     this.submitButton = page.getByTestId('register-submit');
+
+    // The eye icon next to the password (the button without text, as recorded with codegen)
+    this.passwordToggle = this.form.getByRole('button').filter({ hasText: /^$/ }).first();
+
+    // Any validation message or error alert of the form
+    this.anyMessage = page.locator('.alert-danger, [data-test$="-error"]');
   }
 
   async goto() {
     await this.page.goto('/auth/register');
   }
 
-  // locator for any validation message
+  // Locator for any input, e.g. field('postal_code')
+  field(testId) {
+    return this.page.getByTestId(testId);
+  }
+
+  // Locator for any validation message, e.g. error('email-error')
   error(testId) {
     return this.page.getByTestId(testId);
   }

@@ -35,13 +35,10 @@ class CheckoutPage {
     await this.loginSubmit.click();
   }
 
-  // The form is pre-filled from the user's profile shortly after it appears. Typing before that
-  // finishes lets the profile data overwrite the test's input, so wait for the pre-fill first.
   async waitForFormToLoad() {
     await expect(this.postalCode).not.toHaveValue('');
   }
 
-  // The site fills street, city and state itself once country, postcode and house number are known
   async fillBillingAddress({ country, postalCode, houseNumber }) {
     await this.waitForFormToLoad();
     await this.country.selectOption(country);
@@ -49,7 +46,6 @@ class CheckoutPage {
     await this.houseNumber.fill(houseNumber);
     await this.houseNumber.press('Tab');
 
-    // Confirm the typed values stayed in place
     await expect(this.country).toHaveValue(country);
     await expect(this.postalCode).toHaveValue(postalCode);
     await expect(this.houseNumber).toHaveValue(houseNumber);
@@ -84,9 +80,7 @@ class CheckoutPage {
     await this.finish.click();
   }
 
-  // Records every payment and invoice request the page sends: the status the API answered, the
-  // data sent to /invoices (billing address and payment details) and the error text of failed
-  // calls. Returns the list, which fills up as requests happen.
+  // Records every payment and invoice request the page sends
   trackOrderRequests() {
     const calls = [];
     this.page.on('response', (response) => {

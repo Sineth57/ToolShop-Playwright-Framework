@@ -50,11 +50,16 @@ class HomePage {
     return this.page.getByTestId(`category-${id}`);
   }
 
-  // The ids of every category checkbox on the page
+  // ids of every category checkbox on the page
   categoryIds() {
     return this.categoryFilters.evaluateAll((elements) =>
       elements.map((element) => element.getAttribute('data-test').replace('category-', '')),
     );
+  }
+
+  // How many category checkboxes are ticked (ticking a parent category ticks its sub-categories too)
+  checkedCategoryCount() {
+    return this.categoryFilters.evaluateAll((elements) => elements.filter((element) => element.checked).length);
   }
 }
 

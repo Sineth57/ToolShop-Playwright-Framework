@@ -15,7 +15,7 @@ test.describe('Checkout (negative)', () => {
       await checkoutPage.fillBillingAddress(data.checkout.address);
       await checkoutPage.waitForValidAddress();
 
-      // ...and a missing field disables it again, so the payment step cannot be reached
+      // a missing field disables it again so the payment step cannot be reached
       await checkoutPage[key].fill('');
 
       await expect(checkoutPage.proceedFromAddress).toBeDisabled();

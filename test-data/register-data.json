@@ -1,0 +1,188 @@
+{
+  "requiredFields": [
+    { "name": "last name", "path": "last_name" },
+    { "name": "email", "path": "email" },
+    { "name": "password", "path": "password" },
+    {
+      "name": "date of birth",
+      "path": "dob",
+      "knownIssue": "Known issue: the API accepts a registration without a date of birth, although the registration form requires it"
+    },
+    {
+      "name": "phone",
+      "path": "phone",
+      "knownIssue": "Known issue: the API accepts a registration without a phone number, although the registration form requires it"
+    },
+    {
+      "name": "street",
+      "path": "address.street",
+      "knownIssue": "Known issue: the API accepts a registration without a street, although the registration form requires it"
+    },
+    {
+      "name": "city",
+      "path": "address.city",
+      "knownIssue": "Known issue: the API accepts a registration without a city, although the registration form requires it"
+    },
+    {
+      "name": "postal code",
+      "path": "address.postal_code",
+      "knownIssue": "Known issue: the API accepts a registration without a postal code, although the registration form requires it"
+    },
+    {
+      "name": "state",
+      "path": "address.state",
+      "knownIssue": "Known issue: the API accepts a registration without a state, although the registration form requires it"
+    },
+    {
+      "name": "country",
+      "path": "address.country",
+      "knownIssue": "Known issue: the API accepts a registration without a country, although the registration form requires it"
+    }
+  ],
+  "blankValues": [
+    { "name": "an empty first name", "path": "first_name", "value": "" },
+    { "name": "a first name with only spaces", "path": "first_name", "value": "   " },
+    { "name": "an empty last name", "path": "last_name", "value": "" },
+    { "name": "an empty email", "path": "email", "value": "" }
+  ],
+  "weakPasswords": [
+    { "name": "a password that is too short", "value": "Ab1!" },
+    { "name": "a password without capital letters", "value": "lowercase1!" },
+    { "name": "a password without a number", "value": "NoNumbers!!" },
+    { "name": "a password without a special character", "value": "NoSpecial123" },
+    { "name": "a password made only of digits", "value": "12345678" }
+  ],
+  "invalidEmails": [
+    {
+      "name": "an email without @",
+      "value": "missing-at-sign.example.com",
+      "knownIssue": "Known issue: the API does not validate the email format"
+    },
+    {
+      "name": "an email without a domain",
+      "value": "user@",
+      "knownIssue": "Known issue: the API does not validate the email format"
+    },
+    {
+      "name": "an email without a name",
+      "value": "@example.com",
+      "knownIssue": "Known issue: the API does not validate the email format"
+    }
+  ],
+  "invalidDates": [
+    { "name": "text instead of a date", "value": "not-a-date" },
+    { "name": "a date in the future", "value": "2999-01-01" }
+  ],
+  "wrongTypes": [
+    { "name": "an email that is an object", "path": "email", "value": {} },
+    { "name": "an email that is an array", "path": "email", "value": [] },
+    { "name": "a first name that is an object", "path": "first_name", "value": {} },
+    { "name": "a first name that is an array", "path": "first_name", "value": [] },
+    { "name": "a first name that is a number", "path": "first_name", "value": 12345 },
+    { "name": "a password that is an array", "path": "password", "value": [] },
+    { "name": "a password that is an object", "path": "password", "value": {} },
+    { "name": "an address that is plain text", "path": "address", "value": "12 Test Street" },
+    {
+      "name": "an address that is an empty list",
+      "path": "address",
+      "value": [],
+      "knownIssue": "Known issue: an empty address list is treated as no address and accepted, because the address is not enforced"
+    },
+    {
+      "name": "an address that is a list of text",
+      "path": "address",
+      "value": ["12 Test Street"],
+      "knownIssue": "Known issue: the API accepts a list as the address (HTTP 201), because the address is not validated"
+    },
+    { "name": "a date of birth that is an object", "path": "dob", "value": {} },
+    {
+      "name": "a phone number that is an object",
+      "path": "phone",
+      "value": {},
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a phone number that is a list",
+      "path": "phone",
+      "value": ["0771234567"],
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a phone number that is an object with content",
+      "path": "phone",
+      "value": { "number": "0771234567" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a street that is an object",
+      "path": "address.street",
+      "value": { "line": "12 Test Street" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a street that is a list",
+      "path": "address.street",
+      "value": ["12 Test Street"],
+      "knownIssue": "Known issue (expected, not yet confirmed): the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a city that is a list",
+      "path": "address.city",
+      "value": ["Colombo"],
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a city that is an object",
+      "path": "address.city",
+      "value": { "name": "Colombo" },
+      "knownIssue": "Known issue (expected, not yet confirmed): the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a state that is an object",
+      "path": "address.state",
+      "value": { "name": "Western" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a state that is a list",
+      "path": "address.state",
+      "value": ["Western"],
+      "knownIssue": "Known issue (expected, not yet confirmed): the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a country that is an object",
+      "path": "address.country",
+      "value": { "code": "LK" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a country that is a list",
+      "path": "address.country",
+      "value": ["LK"],
+      "knownIssue": "Known issue (expected, not yet confirmed): the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a postal code that is a list",
+      "path": "address.postal_code",
+      "value": ["10100"],
+      "knownIssue": "Known issue: the API answers HTTP 500 when an optional text field is an object or a list"
+    },
+    {
+      "name": "a postal code that is an object",
+      "path": "address.postal_code",
+      "value": { "code": "10100" },
+      "knownIssue": "Known issue (expected, not yet confirmed): the API answers HTTP 500 when an optional text field is an object or a list"
+    }
+  ],
+  "longValues": [
+    { "name": "first name", "path": "first_name", "length": 300 },
+    { "name": "last name", "path": "last_name", "length": 300 },
+    { "name": "street", "path": "address.street", "length": 1000 },
+    { "name": "email", "path": "email", "length": 300, "suffix": "@example.com" }
+  ],
+  "specialTexts": [
+    { "name": "an SQL injection attempt", "value": "O'Brien\"; DROP TABLE users;--" },
+    { "name": "a script tag", "value": "<script>alert(1)</script>" },
+    { "name": "unicode and emoji", "value": "Ünïcödé 名前 🙂" }
+  ]
+}

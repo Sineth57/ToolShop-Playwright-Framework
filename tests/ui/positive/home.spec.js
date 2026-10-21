@@ -94,19 +94,24 @@ test.describe('Home page (positive)', () => {
   test('the category filter shows the products of that category', async ({ homePage, apiRequest }) => {
     await expect(homePage.productNames.first()).toBeVisible();
 
-    // Parent categories can have no products of their own, so pick one the API says has products
+    // Ticking a parent category (e.g. Hand Tools) also ticks all its sub-categories, so the page then
+    // shows more products than the API reports for the parent id alone. Only a category that ticks
+    // by itself (a sub-category) can be compared with the API's count for that one id.
     let chosen = null;
     for (const id of await homePage.categoryIds()) {
       const response = await apiRequest.get('/products', { params: { by_category: id } });
       const body = await response.json();
-      if (body.total > 0) {
+      if (body.total === 0) continue;
+
+      await homePage.categoryFilter(id).check();
+      if ((await homePage.checkedCategoryCount()) === 1) {
         chosen = { id, total: body.total, perPage: body.per_page };
         break;
       }
+      // A parent category: clear it again and try the next one
+      await homePage.categoryFilter(id).uncheck();
     }
-    expect(chosen, 'no category with products was found').not.toBeNull();
-
-    await homePage.categoryFilter(chosen.id).check();
+    expect(chosen, 'no sub-category with products was found').not.toBeNull();
 
     await expect(homePage.productNames).toHaveCount(Math.min(chosen.total, chosen.perPage));
   });

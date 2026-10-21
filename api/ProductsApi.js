@@ -6,7 +6,7 @@ class ProductsApi {
   }
 
   list(params = {}) {
-    // 20 s limit per attempt, so one hanging call cannot use up the whole test timeout
+    // 20 s limit per attempt so one hanging call cannot use up the whole test timeout
     return this.request.get('/products', { params, timeout: 20_000 });
   }
 
@@ -18,8 +18,7 @@ class ProductsApi {
     return this.request.get(`/products/${id}`);
   }
 
-  // Returns the first `count` products of the catalogue. The shared demo sometimes answers
-  // slowly or with a server error, so a failed read is retried a few times before giving up.
+  // Returns the first count products of the catalogue. 
   async firstProducts(count = 1) {
     let products = [];
     await expect(async () => {

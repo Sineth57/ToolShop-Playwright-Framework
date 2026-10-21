@@ -31,7 +31,7 @@ test.describe('Contact form (negative)', () => {
   });
 
   test('a very short message shows a message error', async ({ contactPage }) => {
-    // Assumes the form enforces a minimum message length
+    // assume the form enforces a minimum message length
     await contactPage.fillForm({ ...validForm(), message: data.contact.shortMessage });
     await contactPage.submit();
 

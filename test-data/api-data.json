@@ -11,5 +11,31 @@
   "contactMessage": {
     "subject": "customer-service",
     "message": "I would like to ask about the delivery time of the tools I plan to order next week."
-  }
+  },
+  "invalidLoginPayloads": [
+    { "name": "empty strings", "data": { "email": "", "password": "" } },
+    { "name": "only whitespace", "data": { "email": "   ", "password": "   " } },
+    { "name": "null values", "data": { "email": null, "password": null } },
+    { "name": "a missing email", "data": { "password": "SomePassword!123" } },
+    { "name": "an invalid email format", "data": { "email": "not-an-email", "password": "SomePassword!123" } },
+    { "name": "an SQL injection attempt", "data": { "email": "' OR '1'='1", "password": "' OR '1'='1" } },
+    { "name": "a script tag as email", "data": { "email": "<script>alert(1)</script>", "password": "x" } },
+    { "name": "numbers instead of text", "data": { "email": 12345, "password": 67890 } },
+    {
+      "name": "objects instead of text",
+      "data": { "email": {}, "password": [] },
+      "knownIssue": "Known issue: the API answers HTTP 500 when the email is a JSON object or array"
+    },
+    {
+      "name": "an object as email",
+      "data": { "email": {}, "password": "SomePassword!123" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when the email is a JSON object or array"
+    },
+    {
+      "name": "an array as email",
+      "data": { "email": [], "password": "SomePassword!123" },
+      "knownIssue": "Known issue: the API answers HTTP 500 when the email is a JSON object or array"
+    },
+    { "name": "an array as password", "data": { "email": "nobody-here@example.com", "password": [] } }
+  ]
 }

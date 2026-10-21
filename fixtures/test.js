@@ -14,7 +14,7 @@ const { API_URL } = require('../utils/env');
 const { USER_FILE } = require('../utils/paths');
 
 const test = base.test.extend({
-  // The first two catalogue products, read from the API once per worker and shared by its tests
+  // first two catalogue products read from the api once per worker and shared by its tests
   catalogue: [
     async ({ playwright }, use) => {
       const context = await playwright.request.newContext({ baseURL: API_URL });
@@ -48,7 +48,7 @@ const test = base.test.extend({
     await use(new CheckoutPage(page));
   },
 
-  // API clients (the built-in `request` points at the website, this one at the API)
+  // API clients
   apiRequest: async ({ playwright }, use) => {
     const context = await playwright.request.newContext({ baseURL: API_URL });
     await use(context);
@@ -61,7 +61,7 @@ const test = base.test.extend({
     await use(new ProductsApi(apiRequest));
   },
 
-  // Test data: a brand-new user created through the API for this one test
+  // test data
   newUser: async ({ authApi }, use) => {
     const user = buildUserPayload();
     const response = await authApi.register(user);
@@ -69,12 +69,12 @@ const test = base.test.extend({
     await use(user);
   },
 
-  // The first product of the catalogue
+  // first product of the catalogue
   product: async ({ catalogue }, use) => {
     await use(catalogue[0]);
   },
 
-  // A cart that already holds one product (chosen from the catalogue, added through the UI)
+  // A cart that already holds one product 
   cartWithProduct: async ({ productPage, catalogue }, use) => {
     const [product] = catalogue;
     await productPage.goto(product.id);
@@ -82,7 +82,7 @@ const test = base.test.extend({
     await use(product);
   },
 
-  // The user the setup project logged in (credentials saved in .auth)
+  // user the setup project logged in (credentials saved in auth)
   savedUser: async ({}, use) => {
     await use(JSON.parse(fs.readFileSync(USER_FILE, 'utf8')));
   },

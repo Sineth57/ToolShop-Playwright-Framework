@@ -2,12 +2,12 @@ const { test, expect } = require('../../../fixtures/test');
 const { InvoicesApi } = require('../../../api/InvoicesApi');
 const data = require('../../../test-data/ui-data.json');
 
-// Adds a marker line, so the list shows when each click happened relative to the requests
+// adds a marker line, so the list shows when each click happened relative to the requests
 function mark(calls, text) {
   calls.push({ line: `--- ${text} ---`, detail: '', ready: Promise.resolve() });
 }
 
-// Attaches the recorded requests to the report and prints them, so they are visible on failure too
+// attaches the recorded requests to the report and prints them --> so they are visible on failure 
 async function reportOrderRequests(calls) {
   await Promise.all(calls.map((call) => call.ready));
   const text = calls.length
@@ -18,7 +18,6 @@ async function reportOrderRequests(calls) {
 }
 
 test.describe('Checkout (positive)', () => {
-  // Every test starts at the billing address step: product in cart, signed in at checkout
   test.beforeEach(async ({ cartWithProduct, cartPage, checkoutPage, newUser }) => {
     await cartPage.open();
     await cartPage.proceedButton.click();
@@ -54,9 +53,7 @@ test.describe('Checkout (positive)', () => {
   });
 
   test('the purchase creates an invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
-    // Known issue (project issue #844): the first Confirm shows "Payment was successful"
-    // but creates no invoice. test.fail() keeps the correct expectation and flags the test
-    // when the bug is fixed.
+    
     test.fail(true, 'Known issue #844: first Confirm shows success without creating an invoice');
 
     const calls = checkoutPage.trackOrderRequests();
@@ -77,7 +74,6 @@ test.describe('Checkout (positive)', () => {
   });
 
   test('confirming a second time creates the invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
-    // The workaround for issue #844: a second Confirm does create the order
     const calls = checkoutPage.trackOrderRequests();
     await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);
@@ -87,7 +83,6 @@ test.describe('Checkout (positive)', () => {
     await checkoutPage.confirm();
     mark(calls, 'second Confirm clicked');
 
-    // The shared demo can be slow to store the order, so allow up to 40 s
     const token = await authApi.getToken(newUser.email, newUser.password);
     try {
       await expect

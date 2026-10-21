@@ -5,7 +5,6 @@ class CartPage {
     this.page = page;
     this.nav = new NavBar(page);
     this.rows = page.locator('tbody tr');
-    // The amount sits beside the bold "Total" label: take the nearest element around it that contains a $
     this.total = page.getByRole('strong').locator('xpath=ancestor::*[contains(., "$")][1]');
     this.continueShopping = page.getByTestId('continue-shopping');
     this.proceedButton = page.getByTestId('proceed-1');
@@ -21,7 +20,7 @@ class CartPage {
     await this.page.waitForURL(/checkout/);
   }
 
-  // The table row of one product, found by the exact text of its name cell
+  // table row of one product found by the exact text of its name cell
   row(name) {
     return this.rows.filter({ has: this.page.getByRole('cell', { name, exact: true }) });
   }
