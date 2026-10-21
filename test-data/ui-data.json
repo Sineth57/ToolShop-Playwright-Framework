@@ -1,0 +1,58 @@
+{
+  "categories": [
+    { "testId": "nav-hand-tools", "urlPart": "hand-tools" },
+    { "testId": "nav-power-tools", "urlPart": "power-tools" },
+    { "testId": "nav-other", "urlPart": "other" },
+    { "testId": "nav-special-tools", "urlPart": "special-tools" },
+    { "testId": "nav-rentals", "urlPart": "rentals" }
+  ],
+  "registerRequiredFields": [
+    { "field": "first name", "errorId": "first-name-error" },
+    { "field": "last name", "errorId": "last-name-error" },
+    { "field": "date of birth", "errorId": "dob-error" },
+    { "field": "postal code", "errorId": "postal_code-error" },
+    { "field": "house number", "errorId": "house_number-error" },
+    { "field": "street", "errorId": "street-error" },
+    { "field": "city", "errorId": "city-error" },
+    { "field": "state", "errorId": "state-error" },
+    { "field": "phone", "errorId": "phone-error" },
+    { "field": "email", "errorId": "email-error" },
+    { "field": "password", "errorId": "password-error" }
+  ],
+  "registration": {
+    "firstName": "Test",
+    "lastName": "User",
+    "dob": "1995-05-15",
+    "country": "AR",
+    "postalCode": "1000",
+    "houseNumber": "123",
+    "street": "Calle Falsa",
+    "city": "Buenos Aires",
+    "state": "Buenos Aires",
+    "phone": "0771234567",
+    "password": "Str0ng!Pass#2026"
+  },
+  "weakPassword": "abc",
+  "contact": {
+    "firstName": "Test",
+    "lastName": "User",
+    "subject": "customer-service",
+    "message": "I would like to ask about the delivery time of the tools I plan to order next week.",
+    "shortMessage": "Too short"
+  },
+  "contactRequiredFields": [
+    { "field": "first name", "errorId": "first-name-error", "text": "First name is required" },
+    { "field": "last name", "errorId": "last-name-error", "text": "Last name is required" },
+    { "field": "email", "errorId": "email-error", "text": "Email is required" },
+    { "field": "subject", "errorId": "subject-error", "text": "Subject is required" },
+    { "field": "message", "errorId": "message-error", "text": "Message is required" }
+  ],
+  "checkout": {
+    "address": { "country": "SO", "postalCode": "32154", "houseNumber": "54" },
+    "bank": { "bankName": "Test Bank", "accountName": "Test Account", "accountNumber": "321654987" },
+    "requiredAddressFields": [
+      { "field": "postal code", "key": "postalCode" },
+      { "field": "house number", "key": "houseNumber" }
+    ]
+  }
+}

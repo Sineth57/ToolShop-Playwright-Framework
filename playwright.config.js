@@ -27,9 +27,12 @@ module.exports = defineConfig({
     // API tests: no browser needed, run once
     { name: 'api', testMatch: '**/tests/api/**/*.spec.js' },
 
-    // UI tests: run on all three browsers
-    { name: 'chromium', testIgnore: '**/tests/api/**', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox',  testIgnore: '**/tests/api/**', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit',   testIgnore: '**/tests/api/**', use: { ...devices['Desktop Safari'] } },
+    // Logs in once and saves the session to .auth/user.json
+    { name: 'setup', testMatch: '**/tests/setup/*.setup.js', use: { ...devices['Desktop Chrome'] } },
+
+    // UI tests: run on all three browsers, after the setup has finished
+    { name: 'chromium', testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox',  testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit',   testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Safari'] } },
   ],
 });

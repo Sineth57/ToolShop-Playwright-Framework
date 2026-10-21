@@ -1,0 +1,161 @@
+Base URL: https://practicesoftwaretesting.com | confirm mode: true
+
+##### LOGIN WITH A FRESH USER #####
+
+!!! STOPPED at "register and log in": register returned 500
+
+##### CONTACT #####
+
+=== Contact page | https://practicesoftwaretesting.com/contact ===
+data-test elements:
+  div[notification-bar] text="View the Documentation for this application."
+  a[nav-home] text="Home"
+  button[nav-categories] text="Categories"
+  a[nav-hand-tools] text="Hand Tools"
+  a[nav-power-tools] text="Power Tools"
+  a[nav-other] text="Other"
+  a[nav-special-tools] text="Special Tools"
+  a[nav-rentals] text="Rentals"
+  a[nav-contact] text="Contact"
+  a[nav-sign-in] text="Sign in"
+  button[language-select] text="EN"
+  a[lang-de] text="DE"
+  a[lang-el] text="EL"
+  a[lang-en] text="EN"
+  a[lang-es] text="ES"
+  a[lang-fr] text="FR"
+  a[lang-nl] text="NL"
+  a[lang-tr] text="TR"
+  input[first-name]
+  input[last-name]
+  input[email]
+  select[subject]
+  textarea[message]
+  input[attachment]
+  input[contact-submit] value="Send"
+  div[footer-explore] text="Learn & ExploreLearn Test AutomationHands-on cours"
+  a[footer-learn-courses] text="Learn Test AutomationHands-on courses for Playwrig"
+  a[footer-learn-spector] text="API SpectorOpen-source API testing, mocking and co"
+  a[footer-learn-github] text="GitHubSource code, issues and contributions"
+  button[chat-toggle] text=""
+  button[live-activity-toggle] text=""
+buttons/links WITHOUT data-test:
+  button class="testing-guide-btn" text="Testing Guide"
+  button class="bug-hunting-btn" text="🐛 Bug Hunting"
+  button class="navbar-toggler" text=""
+
+=== Contact page after submitting an empty form | https://practicesoftwaretesting.com/contact ===
+data-test elements:
+  div[notification-bar] text="View the Documentation for this application."
+  a[nav-home] text="Home"
+  button[nav-categories] text="Categories"
+  a[nav-hand-tools] text="Hand Tools"
+  a[nav-power-tools] text="Power Tools"
+  a[nav-other] text="Other"
+  a[nav-special-tools] text="Special Tools"
+  a[nav-rentals] text="Rentals"
+  a[nav-contact] text="Contact"
+  a[nav-sign-in] text="Sign in"
+  button[language-select] text="EN"
+  a[lang-de] text="DE"
+  a[lang-el] text="EL"
+  a[lang-en] text="EN"
+  a[lang-es] text="ES"
+  a[lang-fr] text="FR"
+  a[lang-nl] text="NL"
+  a[lang-tr] text="TR"
+  input[first-name]
+  div[first-name-error] text="First name is required"
+  input[last-name]
+  div[last-name-error] text="Last name is required"
+  input[email]
+  div[email-error] text="Email is required"
+  select[subject]
+  div[subject-error] text="Subject is required"
+  textarea[message]
+  div[message-error] text="Message is required"
+  input[attachment]
+  input[contact-submit] value="Send"
+  div[footer-explore] text="Learn & ExploreLearn Test AutomationHands-on cours"
+  a[footer-learn-courses] text="Learn Test AutomationHands-on courses for Playwrig"
+  a[footer-learn-spector] text="API SpectorOpen-source API testing, mocking and co"
+  a[footer-learn-github] text="GitHubSource code, issues and contributions"
+  button[chat-toggle] text=""
+  button[live-activity-toggle] text=""
+buttons/links WITHOUT data-test:
+  button class="testing-guide-btn" text="Testing Guide"
+  button class="bug-hunting-btn" text="🐛 Bug Hunting"
+  button class="navbar-toggler" text=""
+
+=== Contact page after a valid submit | https://practicesoftwaretesting.com/contact ===
+data-test elements:
+  div[notification-bar] text="View the Documentation for this application."
+  a[nav-home] text="Home"
+  button[nav-categories] text="Categories"
+  a[nav-hand-tools] text="Hand Tools"
+  a[nav-power-tools] text="Power Tools"
+  a[nav-other] text="Other"
+  a[nav-special-tools] text="Special Tools"
+  a[nav-rentals] text="Rentals"
+  a[nav-contact] text="Contact"
+  a[nav-sign-in] text="Sign in"
+  button[language-select] text="EN"
+  a[lang-de] text="DE"
+  a[lang-el] text="EL"
+  a[lang-en] text="EN"
+  a[lang-es] text="ES"
+  a[lang-fr] text="FR"
+  a[lang-nl] text="NL"
+  a[lang-tr] text="TR"
+  input[first-name] value="Test"
+  input[last-name] value="User"
+  input[email] value="audit.1792486816843@example.com"
+  select[subject] value="customer-service"
+  textarea[message] value="This is an automated check of the contac"
+  input[attachment]
+  input[contact-submit] value="Send"
+  div[footer-explore] text="Learn & ExploreLearn Test AutomationHands-on cours"
+  a[footer-learn-courses] text="Learn Test AutomationHands-on courses for Playwrig"
+  a[footer-learn-spector] text="API SpectorOpen-source API testing, mocking and co"
+  a[footer-learn-github] text="GitHubSource code, issues and contributions"
+  button[chat-toggle] text=""
+  button[live-activity-toggle] text=""
+buttons/links WITHOUT data-test:
+  button class="testing-guide-btn" text="Testing Guide"
+  button class="bug-hunting-btn" text="🐛 Bug Hunting"
+  button class="navbar-toggler" text=""
+
+##### SHOP FLOW #####
+
+=== Product page | https://practicesoftwaretesting.com/product/01M5C5D8HKTMSD1KW9Y8C0Q44M ===
+data-test elements:
+  div[notification-bar] text="View the Documentation for this application."
+  a[nav-home] text="Home"
+  button[nav-categories] text="Categories"
+  a[nav-hand-tools] text="Hand Tools"
+  a[nav-power-tools] text="Power Tools"
+  a[nav-other] text="Other"
+  a[nav-special-tools] text="Special Tools"
+  a[nav-rentals] text="Rentals"
+  a[nav-contact] text="Contact"
+  a[nav-sign-in] text="Sign in"
+  button[language-select] text="EN"
+  a[lang-de] text="DE"
+  a[lang-el] text="EL"
+  a[lang-en] text="EN"
+  a[lang-es] text="ES"
+  a[lang-fr] text="FR"
+  a[lang-nl] text="NL"
+  a[lang-tr] text="TR"
+  div[footer-explore] text="Learn & ExploreLearn Test AutomationHands-on cours"
+  a[footer-learn-courses] text="Learn Test AutomationHands-on courses for Playwrig"
+  a[footer-learn-spector] text="API SpectorOpen-source API testing, mocking and co"
+  a[footer-learn-github] text="GitHubSource code, issues and contributions"
+  button[chat-toggle] text=""
+  button[live-activity-toggle] text=""
+buttons/links WITHOUT data-test:
+  button class="testing-guide-btn" text="Testing Guide"
+  button class="bug-hunting-btn" text="🐛 Bug Hunting"
+  button class="navbar-toggler" text=""
+
+!!! STOPPED at "add to cart": locator.click: Timeout 45000ms exceeded.

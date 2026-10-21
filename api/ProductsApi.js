@@ -17,13 +17,18 @@ class ProductsApi {
     return this.request.get(`/products/${id}`);
   }
 
-  // Returns the first product from the catalogue, for tests that need a real id
-  async firstProduct() {
+  // Returns the first `count` products of the catalogue, for tests that need real ids
+  async firstProducts(count = 1) {
     const response = await this.list();
     expect(response.status()).toBe(200);
     const body = await response.json();
-    expect(body.data.length).toBeGreaterThan(0);
-    return body.data[0];
+    expect(body.data.length).toBeGreaterThanOrEqual(count);
+    return body.data.slice(0, count);
+  }
+
+  async firstProduct() {
+    const [product] = await this.firstProducts(1);
+    return product;
   }
 }
 

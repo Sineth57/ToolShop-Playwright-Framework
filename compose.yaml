@@ -1,0 +1,12 @@
+services:
+  playwright:
+    build: .
+    init: true
+    environment:
+      CI: "true"
+      BASE_URL: ${BASE_URL:-https://practicesoftwaretesting.com}
+      API_URL: ${API_URL:-https://api.practicesoftwaretesting.com}
+    command: ["npx", "playwright", "test"]
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
