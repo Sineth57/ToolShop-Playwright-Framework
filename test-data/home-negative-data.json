@@ -1,0 +1,19 @@
+{
+  "searchInputs": [
+    { "name": "only spaces", "value": "   " },
+    { "name": "only symbols", "value": "!@#$%^&*()_+-=[]{};:,.<>?/|" },
+    { "name": "a percent sign", "value": "%" },
+    { "name": "an underscore", "value": "_" },
+    { "name": "a backslash", "value": "\\" },
+    { "name": "SQL text with a quote", "value": "' OR '1'='1" },
+    { "name": "SQL text that drops a table", "value": "'; DROP TABLE products;--" },
+    { "name": "non-Latin letters", "value": "ハンマー" },
+    { "name": "an emoji", "value": "🔨" }
+  ],
+  "scriptInputs": [
+    { "name": "a script tag", "value": "<script>alert(1)</script>" },
+    { "name": "an image with onerror", "value": "<img src=x onerror=alert(1)>" },
+    { "name": "a broken tag with an svg", "value": "\"><svg onload=alert(1)>" }
+  ],
+  "longInputLengths": [300, 2000]
+}

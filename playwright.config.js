@@ -1,4 +1,3 @@
-// @ts-check
 const { defineConfig, devices } = require('@playwright/test');
 require('dotenv').config({ quiet: true });
 
@@ -17,7 +16,6 @@ module.exports = defineConfig({
     ['html', { open: 'never' }],
     ['allure-playwright', {
       resultsDir: 'allure-results',
-      // Shown on the report's overview page
       environmentInfo: {
         Application: 'Practice Software Testing (Toolshop)',
         BASE_URL: process.env.BASE_URL || 'https://practicesoftwaretesting.com',
@@ -45,8 +43,11 @@ module.exports = defineConfig({
     { name: 'setup', testMatch: '**/tests/setup/*.setup.js', use: { ...devices['Desktop Chrome'] } },
 
     // UI tests: run on all three browsers, after the setup has finished
-    { name: 'chromium', testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox',  testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit',   testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Safari'] } },
+     { name: 'chromium', testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Chrome'] } },
+     { name: 'firefox',  testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Firefox'] } },
+     { name: 'webkit',   testIgnore: '**/tests/api/**', dependencies: ['setup'], use: { ...devices['Desktop Safari'] } },
+
+   
+
   ],
 });
