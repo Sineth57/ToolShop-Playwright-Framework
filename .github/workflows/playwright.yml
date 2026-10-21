@@ -65,6 +65,23 @@ jobs:
         if: matrix.browsers != ''
         run: npx playwright install --with-deps ${{ matrix.browsers }}
 
+      - name: Show where the application image installs PECL extensions
+        working-directory: practice-repo
+        run: grep -rn "pecl" --include='*.docker' --include='Dockerfile*' . || true
+
+      - name: Build the application images (with retries)
+        working-directory: practice-repo
+        run: |
+          for i in 1 2 3; do
+            if docker compose build; then
+              exit 0
+            fi
+            echo "Build failed (attempt $i of 3), retrying in 30 s"
+            sleep 30
+          done
+          echo "The application images could not be built"
+          exit 1
+
       - name: Start the application with Docker Compose
         working-directory: practice-repo
         run: docker compose up -d
@@ -184,7 +201,7 @@ jobs:
           retention-days: 14
 
   # Optional: publishes the report as a web page. Switched on by creating a repository
-  # variable named PUBLISH_REPORT with the value true (see "Optional" below).
+  # variable named PUBLISH_REPORT with the value true.
   publish:
     name: Publish the report to GitHub Pages
     needs: report
