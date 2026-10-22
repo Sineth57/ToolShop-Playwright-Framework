@@ -1,0 +1,22 @@
+{
+  "invalidQuantities": [
+    { "name": "zero", "value": "0" },
+    { "name": "a negative number", "value": "-1" },
+    { "name": "a number above the maximum of 99", "value": "100" },
+    { "name": "a very large number", "value": "99999999999" },
+    { "name": "a decimal number", "value": "1.5" },
+    { "name": "exponent notation (1e5)", "value": "1e5" },
+    { "name": "an empty value", "value": "" },
+    { "name": "letters typed into the field", "value": "abc", "typed": true }
+  ],
+  "unknownProductIds": [
+    { "name": "text instead of an id", "id": "invalid-id" },
+    { "name": "a number", "id": "999999" },
+    { "name": "SQL text", "id": "' OR '1'='1" },
+    { "name": "a script tag", "id": "<script>alert(1)</script>" },
+    { "name": "path traversal text", "id": "../../etc/passwd" },
+    { "name": "a 200 character text", "id": "a", "repeat": 200 },
+    { "name": "unicode text", "id": "名前🔨" }
+  ],
+  "failedAddStatuses": [500, 422]
+}

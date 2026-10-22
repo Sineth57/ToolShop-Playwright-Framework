@@ -16,14 +16,19 @@ class ProductPage {
     this.addToFavoritesButton = page.getByTestId('add-to-favorites');
     this.addedToast = page.getByText(/Product added to shopping cart/i);
     this.favoritesError = page.getByText(/Unauthorized, can not add/i);
+
+    // Any notice the page shows (success or error messages)
+    this.alerts = page.locator('.alert, [role="alert"], .toast, .toast-message');
   }
 
   async goto(id) {
     await this.page.goto(`/product/${id}`);
   }
 
-  // The number shown on the cart icon's badge (0 when there is none)
+  // The number shown on the cart icon's badge. 0 when there is none, and also 0 while there is
+  // no cart at all, because the icon only exists once a cart has been created.
   async cartCount() {
+    if ((await this.nav.cart.count()) === 0) return 0;
     const text = await this.nav.cart.innerText();
     const match = text.match(/\d+/);
     return match ? Number(match[0]) : 0;

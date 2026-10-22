@@ -1,0 +1,21 @@
+{
+  "unknownIds": [
+    {
+      "name": "a number",
+      "id": "999999",
+      "knownIssue": "Known issue: GET /products/{id}/related answers HTTP 500 for a product that does not exist"
+    },
+    {
+      "name": "SQL text",
+      "id": "' OR '1'='1",
+      "knownIssue": "Known issue: GET /products/{id}/related answers HTTP 500 for a product that does not exist"
+    },
+    {
+      "name": "unicode text",
+      "id": "名前🔨",
+      "knownIssue": "Known issue: GET /products/{id}/related answers HTTP 500 for a product that does not exist"
+    },
+    { "name": "plain text", "id": "invalid-id" },
+    { "name": "an id that looks valid but does not exist", "id": "00000000000000000000000000" }
+  ]
+}

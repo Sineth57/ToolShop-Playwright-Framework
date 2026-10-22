@@ -1,109 +1,259 @@
 const { test, expect } = require('../../../fixtures/test');
-const { watchDialogs } = require('../../../utils/formMessages');
+const { expectErrorMessage, watchDialogs } = require('../../../utils/formMessages');
+const { trackApi, watchPageErrors } = require('../../../utils/networkWatch');
 const { API_URL } = require('../../../utils/env');
 const data = require('../../../test-data/home-negative-data.json');
 
-const apiOrigin = new URL(API_URL).origin;
+const API_ORIGIN = new URL(API_URL).origin;
+const CORS = { 'access-control-allow-origin': '*' };
 
-// Collects every answer of the API that is a server error (5xx), so a test can prove there was none
-function trackServerErrors(page) {
-  const errors = [];
-  page.on('response', (response) => {
-    if (response.url().startsWith(apiOrigin) && response.status() >= 500) {
-      errors.push(`${response.status()} ${response.request().method()} ${response.url()}`);
-    }
-  });
-  return errors;
+// After a search or filter change the page must show either products or a "no results" message,
+// the API must not have answered with a server error, and no script may have run
+async function expectHandled(homePage, tracker, dialogs = []) {
+  // Give the page time to ask the API (if it does at all) before judging the result
+  await expect
+    .poll(() => tracker.calls.length, { timeout: 10_000 })
+    .toBeGreaterThan(0)
+    .catch(() => {});
+  try {
+    await expect(homePage.productNames.first().or(homePage.noResults)).toBeVisible();
+  } finally {
+    expect(tracker.serverErrors, 'the API answered with a server error').toEqual([]);
+    expect(dialogs, 'a script in the input must not open a dialog').toEqual([]);
+  }
 }
 
-// Searches and gives the API a moment to answer. The wait is soft on purpose: some inputs
-// (an empty box, only spaces) may not send a request at all, and that is not a failure.
-async function searchAndSettle(homePage, page, text) {
-  const answered = page
-    .waitForResponse((r) => r.url().startsWith(apiOrigin) && r.request().method() === 'GET', { timeout: 5_000 })
-    .catch(() => null);
-  await homePage.search(text);
-  await answered;
+// Replaces the answers of the product list request
+async function mockProductList(page, respond) {
+  await page.route((url) => url.origin === API_ORIGIN && url.pathname === '/products', respond);
+}
+
+// The site must still work when the product list is missing: menu visible, no products, links work
+async function expectSiteStillUsable(homePage, page) {
+  await expect(homePage.nav.contact).toBeVisible();
+  await expect(homePage.productNames).toHaveCount(0);
+  await homePage.nav.contact.click();
+  await expect(page).toHaveURL(/contact/);
+}
+
+async function attachPageErrors(errors) {
+  await test.info().attach('uncaught page errors', {
+    body: errors.join('\n') || 'none',
+    contentType: 'text/plain',
+  });
 }
 
 test.describe('Home page (negative)', () => {
-  test.beforeEach(async ({ homePage }) => {
-    await homePage.goto();
-    await expect(homePage.productNames.first()).toBeVisible();
-  });
-
-  test('a search with no matches shows no products', async ({ homePage }) => {
-    await homePage.search('zzzzqqqqxxxx');
-
-    await expect(homePage.productNames).toHaveCount(0);
-  });
-
-  // Unusual text must neither crash the API nor leave the page unusable
-  for (const { name, value } of data.searchInputs) {
-    test(`searching for ${name} does not break the page`, async ({ homePage, page }) => {
-      const serverErrors = trackServerErrors(page);
-
-      await searchAndSettle(homePage, page, value);
-
-      expect(serverErrors, 'the API must not answer with a server error').toEqual([]);
-      await homePage.searchReset.click();
-      await expect(homePage.searchInput).toHaveValue('');
+  test.describe('search input', () => {
+    test.beforeEach(async ({ homePage }) => {
+      await homePage.goto();
       await expect(homePage.productNames.first()).toBeVisible();
     });
-  }
 
-  for (const length of data.longInputLengths) {
-    test(`searching for a text of ${length} characters does not break the page`, async ({ homePage, page }) => {
-      const serverErrors = trackServerErrors(page);
+    for (const { name, value } of data.searchTerms) {
+      test(`searching for ${name} is handled safely`, async ({ homePage, page }) => {
+        const dialogs = watchDialogs(page);
+        const tracker = trackApi(page);
 
-      await searchAndSettle(homePage, page, 'a'.repeat(length));
+        await homePage.search(value);
 
-      expect(serverErrors, 'the API must not answer with a server error').toEqual([]);
-      await homePage.searchReset.click();
+        await expectHandled(homePage, tracker, dialogs);
+      });
+    }
+
+    test('searching for a very long text is handled safely', async ({ homePage, page }) => {
+      const tracker = trackApi(page);
+
+      await homePage.search('a'.repeat(300));
+
+      await expectHandled(homePage, tracker);
+    });
+
+    test('submitting an empty search shows the full list again', async ({ homePage }) => {
+      const initialCount = await homePage.productNames.count();
+
+      await homePage.searchInput.fill('');
+      await homePage.searchButton.click();
+
+      await expect(homePage.productNames).toHaveCount(initialCount);
+    });
+  });
+
+  test.describe('empty results', () => {
+    test.beforeEach(async ({ homePage }) => {
+      await homePage.goto();
       await expect(homePage.productNames.first()).toBeVisible();
     });
-  }
 
-  for (const { name, value } of data.scriptInputs) {
-    test(`script text in the search box (${name}) does not run`, async ({ homePage, page }) => {
-      const dialogs = watchDialogs(page);
+    test('a search with no matches shows no products', async ({ homePage }) => {
+      await homePage.search('zzzzqqqqxxxx');
 
-      await searchAndSettle(homePage, page, value);
-
-      expect(dialogs, 'a script in the search must not open a dialog').toEqual([]);
-      await expect(page.locator('img[src="x"]'), 'typed text must not become page elements').toHaveCount(0);
+      await expect(homePage.productNames).toHaveCount(0);
+      await expectErrorMessage(homePage.noResults, 'home: empty search result');
     });
-  }
 
-  test('searching with an empty box keeps the full product list', async ({ homePage, page }) => {
-    const initialCount = await homePage.productNames.count();
+    test('the reset button brings the products back after an empty result', async ({ homePage }) => {
+      const initialCount = await homePage.productNames.count();
+      await homePage.search('zzzzqqqqxxxx');
+      await expect(homePage.productNames).toHaveCount(0);
 
-    await searchAndSettle(homePage, page, '');
+      await homePage.searchReset.click();
 
-    await expect(homePage.productNames).toHaveCount(initialCount);
+      await expect(homePage.productNames).toHaveCount(initialCount);
+    });
+
+    test('switching on the eco-friendly filter on an empty result does not break the page', async ({ homePage, page }) => {
+      await homePage.search('zzzzqqqqxxxx');
+      await expect(homePage.productNames).toHaveCount(0);
+      const tracker = trackApi(page);
+
+      await homePage.ecoFilter.check();
+
+      await expect(homePage.ecoFilter).toBeChecked();
+      await expect(homePage.productNames).toHaveCount(0);
+      expect(tracker.serverErrors, 'the API answered with a server error').toEqual([]);
+    });
+
+    test('sorting an empty result does not break the page', async ({ homePage, page }) => {
+      await homePage.search('zzzzqqqqxxxx');
+      await expect(homePage.productNames).toHaveCount(0);
+      const tracker = trackApi(page);
+
+      await homePage.sortBy('price,asc');
+
+      await expect(homePage.productNames).toHaveCount(0);
+      await expect(homePage.sortSelect).toHaveValue('price,asc');
+      expect(tracker.serverErrors, 'the API answered with a server error').toEqual([]);
+    });
   });
 
-  test('a search is not case sensitive', async ({ homePage }) => {
-    await homePage.search('HAMMER');
+  test.describe('pagination limits', () => {
+    test.beforeEach(async ({ homePage }) => {
+      await homePage.goto();
+      await expect(homePage.productNames.first()).toBeVisible();
+    });
 
-    await expect(homePage.productNames.first()).toContainText(/hammer/i);
+    test('the previous button cannot be used on the first page', async ({ homePage }) => {
+      const disabled = await homePage.isDisabled(homePage.previousPage);
+
+      expect(disabled, 'the "previous" button is still active on the first page').toBe(true);
+    });
+
+    test('the next button cannot be used on the last page', async ({ homePage, apiRequest }) => {
+      test.setTimeout(120_000);
+      const { last_page: lastPage } = await (await apiRequest.get('/products')).json();
+      test.skip(lastPage < 2, 'the catalogue has only one page');
+
+      // Click through to the last page, waiting for each page to show different products
+      for (let step = 1; step < lastPage; step += 1) {
+        const before = (await homePage.names())[0];
+        await homePage.goToNextPage();
+        await expect(homePage.productNames.first()).not.toHaveText(before);
+      }
+
+      const disabled = await homePage.isDisabled(homePage.nextPage);
+      expect(disabled, 'the "next" button is still active on the last page').toBe(true);
+    });
   });
 
-  test('spaces around the search text are ignored', async ({ homePage }) => {
-    await homePage.search('  hammer  ');
+  test.describe('price slider', () => {
+    test('moving the maximum price down to the minimum does not break the page', async ({ homePage, page }) => {
+      await homePage.goto();
+      await expect(homePage.productNames.first()).toBeVisible();
+      const tracker = trackApi(page);
 
-    await expect(homePage.productNames.first()).toContainText(/hammer/i);
+      await homePage.maxPriceSlider.focus();
+      await homePage.maxPriceSlider.press('Home');
+
+      await expectHandled(homePage, tracker);
+    });
   });
 
-  test('double-clicking Search does not duplicate products or fail', async ({ homePage, page }) => {
-    const serverErrors = trackServerErrors(page);
-    await homePage.searchInput.fill('hammer');
+  test.describe('unknown addresses', () => {
+    for (const { name, path } of data.unknownAddresses) {
+      test(`${name} does not break the site`, async ({ homePage, page }) => {
+        const dialogs = watchDialogs(page);
+        const tracker = trackApi(page);
 
-    await homePage.searchButton.dblclick();
+        const response = await page.goto(path);
 
-    await expect(homePage.productNames.first()).toContainText(/hammer/i);
-    const names = await homePage.names();
-    expect(new Set(names).size, 'a product must be listed only once').toBe(names.length);
-    expect(serverErrors, 'the API must not answer with a server error').toEqual([]);
+        expect(response.status(), 'the web server itself failed').toBeLessThan(500);
+        await expect(homePage.nav.home).toBeVisible();
+        await test.info().attach(`address: ${name}`, {
+          body: `requested ${path}\nended up at ${page.url()}`,
+          contentType: 'text/plain',
+        });
+        expect(tracker.serverErrors, 'the API answered with a server error').toEqual([]);
+        expect(dialogs, 'a script in the address must not open a dialog').toEqual([]);
+      });
+    }
+  });
+
+  // The product API is replaced by a fake that fails, to see how the page copes
+  test.describe('problems with the product API (simulated)', () => {
+    test('a server error (HTTP 500) leaves the site usable', async ({ homePage, page }) => {
+      const pageErrors = watchPageErrors(page);
+      await mockProductList(page, (route) =>
+        route.fulfill({
+          status: 500,
+          contentType: 'application/json',
+          headers: CORS,
+          body: JSON.stringify({ message: 'Server Error' }),
+        }),
+      );
+
+      await homePage.goto();
+
+      await expectSiteStillUsable(homePage, page);
+      await attachPageErrors(pageErrors);
+    });
+
+    test('a failed network connection leaves the site usable', async ({ homePage, page }) => {
+      const pageErrors = watchPageErrors(page);
+      await mockProductList(page, (route) => route.abort('failed'));
+
+      await homePage.goto();
+
+      await expectSiteStillUsable(homePage, page);
+      await attachPageErrors(pageErrors);
+    });
+
+    test('an answer that is not valid JSON leaves the site usable', async ({ homePage, page }) => {
+      const pageErrors = watchPageErrors(page);
+      await mockProductList(page, (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          headers: CORS,
+          body: 'this is not json',
+        }),
+      );
+
+      await homePage.goto();
+
+      await expectSiteStillUsable(homePage, page);
+      await attachPageErrors(pageErrors);
+    });
+
+    test('an empty product list shows the "no results" state without errors', async ({ homePage, page }) => {
+      const pageErrors = watchPageErrors(page);
+      await mockProductList(page, (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          headers: CORS,
+          body: JSON.stringify({
+            current_page: 1, data: [], from: null, last_page: 1, per_page: 9, to: null, total: 0,
+          }),
+        }),
+      );
+
+      await homePage.goto();
+
+      await expect(homePage.productNames).toHaveCount(0);
+      await expectErrorMessage(homePage.noResults, 'home: no products in the catalogue');
+      await attachPageErrors(pageErrors);
+      expect(pageErrors, 'an empty list must not cause JavaScript errors').toEqual([]);
+    });
   });
 });

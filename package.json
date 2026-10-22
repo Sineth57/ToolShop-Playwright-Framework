@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
+"scripts": {
   "test": "playwright test",
   "test:chromium": "playwright test --project=chromium",
   "test:headed": "playwright test --headed --project=chromium",
   "test:ui": "playwright test tests/ui",
   "test:api": "playwright test tests/api",
+  "test:e2e": "playwright test tests/e2e",
   "test:positive": "playwright test positive",
   "test:negative": "playwright test negative",
   "test:ui:positive": "playwright test tests/ui/positive",

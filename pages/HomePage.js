@@ -14,6 +14,13 @@ class HomePage {
     this.ecoFilter = page.getByTestId('eco-friendly-filter');
     this.nextPage = page.getByTestId('pagination-next');
     this.previousPage = page.getByTestId('pagination-prev');
+
+    // The message for an empty result (the test id is a best guess, the text is the fallback)
+    this.noResults = page.getByTestId('no-results').or(page.getByText(/no products? found|no results/i)).first();
+
+    // The two handles of the price slider, as recorded with codegen
+    this.minPriceSlider = page.getByRole('slider', { name: 'ngx-slider', exact: true });
+    this.maxPriceSlider = page.getByRole('slider', { name: 'ngx-slider-max' });
   }
 
   async goto() {
@@ -50,16 +57,25 @@ class HomePage {
     return this.page.getByTestId(`category-${id}`);
   }
 
-  // ids of every category checkbox on the page
+  // The ids of every category checkbox on the page
   categoryIds() {
     return this.categoryFilters.evaluateAll((elements) =>
       elements.map((element) => element.getAttribute('data-test').replace('category-', '')),
     );
   }
 
-  // How many category checkboxes are ticked (ticking a parent category ticks its sub-categories too)
-  checkedCategoryCount() {
-    return this.categoryFilters.evaluateAll((elements) => elements.filter((element) => element.checked).length);
+  // True when a pagination control is hidden or switched off (by attribute or by a "disabled" style)
+  async isDisabled(control) {
+    if (!(await control.count()) || !(await control.first().isVisible())) return true;
+    return control.first().evaluate((element) => {
+      const holder = element.closest('li');
+      return (
+        element.hasAttribute('disabled') ||
+        element.getAttribute('aria-disabled') === 'true' ||
+        element.classList.contains('disabled') ||
+        Boolean(holder && holder.classList.contains('disabled'))
+      );
+    });
   }
 }
 

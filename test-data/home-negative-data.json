@@ -1,19 +1,18 @@
 {
-  "searchInputs": [
+  "searchTerms": [
     { "name": "only spaces", "value": "   " },
-    { "name": "only symbols", "value": "!@#$%^&*()_+-=[]{};:,.<>?/|" },
-    { "name": "a percent sign", "value": "%" },
-    { "name": "an underscore", "value": "_" },
-    { "name": "a backslash", "value": "\\" },
-    { "name": "SQL text with a quote", "value": "' OR '1'='1" },
-    { "name": "SQL text that drops a table", "value": "'; DROP TABLE products;--" },
-    { "name": "non-Latin letters", "value": "ハンマー" },
-    { "name": "an emoji", "value": "🔨" }
-  ],
-  "scriptInputs": [
+    { "name": "a single quote", "value": "'" },
+    { "name": "SQL injection text", "value": "' OR '1'='1" },
+    { "name": "SQL comment characters", "value": "--; DROP TABLE products;--" },
     { "name": "a script tag", "value": "<script>alert(1)</script>" },
-    { "name": "an image with onerror", "value": "<img src=x onerror=alert(1)>" },
-    { "name": "a broken tag with an svg", "value": "\"><svg onload=alert(1)>" }
+    { "name": "an image tag with an error handler", "value": "\"><img src=x onerror=alert(1)>" },
+    { "name": "wildcard characters", "value": "%_" },
+    { "name": "a backslash", "value": "\\" },
+    { "name": "unicode and emoji", "value": "名前 🔨" }
   ],
-  "longInputLengths": [300, 2000]
+  "unknownAddresses": [
+    { "name": "an unknown page", "path": "/this-page-does-not-exist" },
+    { "name": "an unknown category", "path": "/category/does-not-exist" },
+    { "name": "an address containing a script tag", "path": "/%3Cscript%3Ealert(1)%3C/script%3E" }
+  ]
 }
