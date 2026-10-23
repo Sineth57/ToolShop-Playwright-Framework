@@ -10,7 +10,6 @@ async function expectErrorMessage(locator, label) {
   return text;
 }
 
-// Collects every browser dialog (alert, confirm, prompt), so a test can prove that no script ran
 function watchDialogs(page) {
   const dialogs = [];
   page.on('dialog', async (dialog) => {
