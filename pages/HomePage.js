@@ -72,6 +72,11 @@ class HomePage {
     );
   }
 
+    // How many category checkboxes are ticked (ticking a parent category ticks its sub-categories too)
+  checkedCategoryCount() {
+    return this.categoryFilters.evaluateAll((elements) => elements.filter((element) => element.checked).length);
+  }
+
   // True when a pagination control is hidden or switched off (by attribute or by a "disabled" style)
   async isDisabled(control) {
     if (!(await control.count()) || !(await control.first().isVisible())) return true;

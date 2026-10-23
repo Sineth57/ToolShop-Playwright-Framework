@@ -132,11 +132,18 @@ jobs:
           exit 1
 
       # Seeding runs as root and can leave files the web process cannot write (a common cause of HTTP 500)
+      # - name: Make the storage folders writable and clear caches
+      #   if: matrix.local_app
+      #   working-directory: practice-repo
+      #   run: |
+      #     docker compose exec -T laravel-api sh -c 'chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true; chmod -R 777 storage bootstrap/cache || true'
+      #     docker compose exec -T laravel-api php artisan optimize:clear || true
+
       - name: Make the storage folders writable and clear caches
         if: matrix.local_app
         working-directory: practice-repo
         run: |
-          docker compose exec -T laravel-api sh -c 'chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true; chmod -R 777 storage bootstrap/cache || true'
+          docker compose exec -T -u root laravel-api sh -c 'chmod -R 777 storage bootstrap/cache'
           docker compose exec -T laravel-api php artisan optimize:clear || true
 
       # The Angular container runs "npm install" and then "ng serve", which takes a few minutes
