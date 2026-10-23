@@ -14,10 +14,10 @@ class LoginPage {
     this.registerLink = page.getByTestId('register-link');
     this.forgotPasswordLink = page.getByTestId('forgot-password-link');
 
-    // The eye icon next to the password (the button without text, as recorded with codegen)
+    // eye icon next to the password 
     this.passwordToggle = this.form.getByRole('button').filter({ hasText: /^$/ }).first();
 
-    // Whichever message the form shows (a field error or the login error)
+    // field error
     this.anyError = this.emailError.or(this.passwordError).or(this.loginError);
   }
 

@@ -18,7 +18,7 @@ class AuthApi {
     return { Authorization: `Bearer ${token}` };
   }
 
-  // Login and returns the bearer token, failing with the server reply if it can't
+  // login and returns the bearer token failing with the server reply if it can't
   async getToken(email, password) {
     const response = await this.login(email, password);
     const text = await response.text();

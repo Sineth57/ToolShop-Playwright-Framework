@@ -5,7 +5,6 @@ const { parsePrice } = require('../../utils/price');
 const { mark, reportOrderRequests } = require('../../utils/orderReport');
 const data = require('../../test-data/ui-data.json');
 
-// The whole customer journey, from a brand-new visitor to the order confirmation:
 // register > log in > home page > open a product > add it to the cart > cart > checkout > payment
 async function runPurchaseFlow({ page, registerPage, loginPage, homePage, productPage, cartPage, checkoutPage }) {
   const customer = { ...data.registration, email: uniqueEmail('e2e') };

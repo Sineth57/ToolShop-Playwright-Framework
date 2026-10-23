@@ -51,7 +51,6 @@ class CheckoutPage {
     await expect(this.houseNumber).toHaveValue(houseNumber);
   }
 
-  // The Proceed button stays disabled until the address is complete (including the autofilled part)
   // async waitForValidAddress() {
   //   await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
   // }
@@ -80,7 +79,7 @@ class CheckoutPage {
     await this.finish.click();
   }
 
-  // Records every payment and invoice request the page sends
+  // see whether the application sends payment or invoice requests, what status codes it receives and requests and responces
   trackOrderRequests() {
     const calls = [];
     this.page.on('response', (response) => {

@@ -16,10 +16,10 @@ class RegisterPage {
     this.password = page.getByTestId('password');
     this.submitButton = page.getByTestId('register-submit');
 
-    // The eye icon next to the password (the button without text, as recorded with codegen)
+    // eye icon next to the password
     this.passwordToggle = this.form.getByRole('button').filter({ hasText: /^$/ }).first();
 
-    // Any validation message or error alert of the form
+    // validation message
     this.anyMessage = page.locator('.alert-danger, [data-test$="-error"]');
   }
 
@@ -27,12 +27,11 @@ class RegisterPage {
     await this.page.goto('/auth/register');
   }
 
-  // Locator for any input, e.g. field('postal_code')
   field(testId) {
     return this.page.getByTestId(testId);
   }
 
-  // Locator for any validation message, e.g. error('email-error')
+  // validation message(email-error)
   error(testId) {
     return this.page.getByTestId(testId);
   }

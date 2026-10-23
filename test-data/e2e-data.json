@@ -1,0 +1,12 @@
+{
+  "multiProductCart": {
+    "firstCategory": "nav-hand-tools",
+    "secondCategory": "nav-power-tools",
+    "raisedQuantity": 3
+  },
+  "purchaseLimit": {
+    "product": "Thor Hammer",
+    "ruleText": "only one",
+    "maxPerCustomer": 1
+  }
+}

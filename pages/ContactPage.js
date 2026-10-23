@@ -34,7 +34,7 @@ class ContactPage {
     await this.submitButton.click();
   }
 
-  // Submits the form and returns the API's response to POST /messages
+  // submits the form and returns the api response 
   async submitAndWaitForApi() {
     const [response] = await Promise.all([
       this.page.waitForResponse((r) => r.url().includes('/messages') && r.request().method() === 'POST'),

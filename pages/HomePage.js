@@ -49,6 +49,14 @@ class HomePage {
     return texts.map((text) => text.trim());
   }
 
+  // The card of one product, found by its EXACT name: "Pliers" must not match "Combination Pliers".
+  // A regular expression anchored at both ends says "exactly this text" (the replace() escapes
+  // characters that have a special meaning in a regular expression).
+  productByName(name) {
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return this.productNames.filter({ hasText: new RegExp(`^\\s*${escaped}\\s*$`) }).first();
+  }
+
   brandFilter(id) {
     return this.page.getByTestId(`brand-${id}`);
   }

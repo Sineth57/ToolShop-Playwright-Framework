@@ -54,5 +54,12 @@
       { "field": "postal code", "key": "postalCode" },
       { "field": "house number", "key": "houseNumber" }
     ]
-  }
+  },
+  "searchTerms": ["hammer", "pliers", "saw"],
+  "priceRanges": [
+    { "min": 1, "max": 50 },
+    { "min": 10, "max": 100 },
+    { "min": 50, "max": 200 }
+  ]
+
 }

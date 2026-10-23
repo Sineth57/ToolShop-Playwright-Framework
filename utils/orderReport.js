@@ -1,4 +1,4 @@
-const { test } = require('@playwright/test');
+const { test, expect } = require('@playwright/test');
 
 // Adds a marker line to a list of recorded requests, so the report shows when each action happened
 function mark(calls, text) {
@@ -16,4 +16,20 @@ async function reportOrderRequests(calls) {
   console.log(`[${test.info().title}] order requests:\n${text}`);
 }
 
-module.exports = { mark, reportOrderRequests };
+// Runs ONE check that currently fails because of a known defect, and nothing else in the test.
+// While the defect exists the check fails, and the test stays green with a "known issue" note.
+// As soon as the check passes, the test FAILS, as a reminder that the defect is fixed and this
+// workaround can be removed. Unlike test.fail(), a failure in an earlier step is never hidden.
+async function expectKnownIssue(description, check) {
+  let passed = false;
+  try {
+    await check();
+    passed = true;
+  } catch {
+    // the defect is still there
+  }
+  test.info().annotations.push({ type: 'known issue', description });
+  expect(passed, `The known issue seems to be fixed: "${description}". Remove the workaround.`).toBe(false);
+}
+
+module.exports = { mark, reportOrderRequests, expectKnownIssue };

@@ -17,7 +17,7 @@ class ProductPage {
     this.addedToast = page.getByText(/Product added to shopping cart/i);
     this.favoritesError = page.getByText(/Unauthorized, can not add/i);
 
-    // Any notice the page shows (success or error messages)
+    // success message / alert
     this.alerts = page.locator('.alert, [role="alert"], .toast, .toast-message');
   }
 
@@ -25,8 +25,8 @@ class ProductPage {
     await this.page.goto(`/product/${id}`);
   }
 
-  // The number shown on the cart icon's badge. 0 when there is none, and also 0 while there is
-  // no cart at all, because the icon only exists once a cart has been created.
+  // the number shown on the cart icon's badge. 0 when there is none and also 0 while there is no cart at all because the icon only 
+  // exists once a cart has been created.
   async cartCount() {
     if ((await this.nav.cart.count()) === 0) return 0;
     const text = await this.nav.cart.innerText();
@@ -34,8 +34,7 @@ class ProductPage {
     return match ? Number(match[0]) : 0;
   }
 
-  // Adds the product and waits until the site confirms it: the toast message appears, or the cart
-  // badge reaches the expected number (the toast disappears quickly, so it can be missed when slow)
+  // Add the product and waits until the site confirms it. the message appears or the cart badge reaches the expected number 
   async addToCart(expectedCount = 1) {
     await this.addToCartButton.click();
     await expect(async () => {

@@ -18,7 +18,7 @@ class ProductsApi {
     return this.request.get(`/products/${id}`);
   }
 
-  // Returns the first count products of the catalogue. 
+  // getting the first count products of the catalogue
   async firstProducts(count = 1) {
     let products = [];
     await expect(async () => {

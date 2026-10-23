@@ -25,7 +25,7 @@ const test = base.test.extend({
     { scope: 'worker', timeout: 60_000 },
   ],
 
-  // Page Objects
+  // page objects
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
   },
@@ -74,7 +74,7 @@ const test = base.test.extend({
     await use(catalogue[0]);
   },
 
-  // A cart that already holds one product 
+  // cart that already holds one product 
   cartWithProduct: async ({ productPage, catalogue }, use) => {
     const [product] = catalogue;
     await productPage.goto(product.id);
