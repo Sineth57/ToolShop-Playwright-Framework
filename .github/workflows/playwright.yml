@@ -25,22 +25,23 @@ jobs:
     env:
       # Start only the services of the app's main compose file (no phpmyadmin, cron or mailcatcher)
       COMPOSE_FILE: docker-compose.yml
+
     strategy:
       fail-fast: false # one failing browser must not stop the others
       matrix:
         include:
           - project: api
             browsers: ""
-            local_app: false
+            local_app: false # API tests keep using the public API
           - project: chromium
             browsers: chromium
-            local_app: true # the public site's bot check blocks Chromium on GitHub's servers
+            local_app: true # the public site's bot check blocks browsers on GitHub's servers
           - project: firefox
             browsers: chromium firefox # chromium is needed by the login setup project
-            local_app: false
+            local_app: true
           - project: webkit
             browsers: chromium webkit
-            local_app: false
+            local_app: true
 
     steps:
       - name: Check out the framework
