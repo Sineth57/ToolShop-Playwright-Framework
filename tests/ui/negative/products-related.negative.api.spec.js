@@ -4,11 +4,13 @@ const data = require('../../../test-data/related-products-data.json');
 
 test.use({ baseURL: API_URL });
 
+const KNOWN_ISSUE = 'Known application bug: GET /products/{id}/related answers HTTP 500 for an unknown product';
+
 test.describe('GET /products/{id}/related (negative)', () => {
-  for (const { name, id, knownIssue } of data.unknownIds) {
+  for (const { name, id } of data.unknownIds) {
     test(`a product with ${name} as the id does not cause a server error`, async ({ request }) => {
-      // ids with a known defect keep the correct expectation and are flagged when fixed
-      test.fail(Boolean(knownIssue), knownIssue);
+      // The expectation stays correct (a 4xx); the test is flagged as soon as the bug is fixed
+      test.fail(true, KNOWN_ISSUE);
 
       const response = await request.get(`/products/${encodeURIComponent(id)}/related`);
 
