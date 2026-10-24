@@ -49,6 +49,7 @@
   ],
   "checkout": {
     "address": { "country": "SO", "postalCode": "32154", "houseNumber": "54" },
+    "addressInProfileCountry": { "country": "LK", "postalCode": "10100", "houseNumber": "54" },
     "bank": { "bankName": "Test Bank", "accountName": "Test Account", "accountNumber": "321654987" },
     "requiredAddressFields": [
       { "field": "postal code", "key": "postalCode" },

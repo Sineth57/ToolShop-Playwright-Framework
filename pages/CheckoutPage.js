@@ -64,9 +64,22 @@ class CheckoutPage {
     await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
   }
 
-  async goToPayment(address) {
+  // async goToPayment(address) {
+  //   await this.fillBillingAddress(address);
+  //   await this.waitForValidAddress();
+  //   await this.proceedFromAddress.click();
+  //   await expect(this.paymentMethod).toBeVisible();
+  // }
+
+    // expectAutofill: false is for an address in the user's own country, where the profile's
+  // street, city and state are already valid and the site may not replace them
+  async goToPayment(address, { expectAutofill = true } = {}) {
     await this.fillBillingAddress(address);
-    await this.waitForValidAddress();
+    if (expectAutofill) {
+      await this.waitForValidAddress();
+    } else {
+      await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
+    }
     await this.proceedFromAddress.click();
     await expect(this.paymentMethod).toBeVisible();
   }
