@@ -11,13 +11,13 @@ const INVALID_ID = 'invalid-cart-id';
 
 test.describe('Carts API (negative)', () => {
 
-  test('GET a cart that does not exist returns 404', async ({ request }) => {
+  test('TC008 - GET a cart that does not exist returns 404', async ({ request }) => {
     const response = await new CartApi(request).get(MISSING_ID);
 
     expect(response.status()).toBe(404);
   });
 
-  test('adding a product to a cart that does not exist returns 404', async ({ request }) => {
+  test('TC009 - adding a product to a cart that does not exist returns 404', async ({ request }) => {
     const product = await new ProductsApi(request).firstProduct();
 
     const response = await new CartApi(request).addItem(MISSING_ID, product.id);
@@ -25,7 +25,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBe(404);
   });
 
-  test('adding a product that does not exist is rejected', async ({ request }) => {
+  test('TC010 - adding a product that does not exist is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
 
@@ -34,22 +34,21 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  // NEW TESTS
 
-  test('GET a cart with an invalid ID format is rejected', async ({ request }) => {
+  test('TC011 - GET a cart with an invalid ID format is rejected', async ({ request }) => {
     const response = await new CartApi(request).get(INVALID_ID);
 
     expect(response.status()).toBeGreaterThanOrEqual(400);
     expect(response.status()).toBeLessThan(500);
   });
 
-  test('GET a cart with an empty ID is rejected', async ({ request }) => {
+  test('TC012 - GET a cart with an empty ID is rejected', async ({ request }) => {
     const response = await new CartApi(request).get('');
 
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with an invalid ID format is rejected', async ({ request }) => {
+  test('TC013 - adding a product with an invalid ID format is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
 
@@ -58,7 +57,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with an empty ID is rejected', async ({ request }) => {
+  test('TC014 - adding a product with an empty ID is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
 
@@ -67,7 +66,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with a null ID is rejected', async ({ request }) => {
+  test('TC015 - adding a product with a null ID is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
 
@@ -81,7 +80,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with a negative quantity is rejected', async ({ request }) => {
+  test('TC016 - adding a product with a negative quantity is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
     const product = await new ProductsApi(request).firstProduct();
@@ -96,7 +95,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with zero quantity is rejected', async ({ request }) => {
+  test('TC017 - adding a product with zero quantity is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
     const product = await new ProductsApi(request).firstProduct();
@@ -111,7 +110,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product without a quantity is rejected', async ({ request }) => {
+  test('TC018 - adding a product without a quantity is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
     const product = await new ProductsApi(request).firstProduct();
@@ -125,7 +124,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with a string quantity is rejected', async ({ request }) => {
+  test('TC020 - adding a product with a string quantity is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
     const product = await new ProductsApi(request).firstProduct();
@@ -140,7 +139,7 @@ test.describe('Carts API (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('adding a product with a decimal quantity is rejected', async ({ request }) => {
+  test('TC021 - adding a product with a decimal quantity is rejected', async ({ request }) => {
     const cartApi = new CartApi(request);
     const cartId = await cartApi.createCartId();
     const product = await new ProductsApi(request).firstProduct();

@@ -6,7 +6,6 @@ class ProductsApi {
   }
 
   list(params = {}) {
-    // 20 s limit per attempt so one hanging call cannot use up the whole test timeout
     return this.request.get('/products', { params, timeout: 20_000 });
   }
 

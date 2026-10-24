@@ -6,10 +6,6 @@ const data = require('../../test-data/ui-data.json');
 
 const QUANTITY = 2;
 
-// A returning customer buys two of a product they find on the home page:
-// log in > home page > search or filter > open the product > quantity 2 > add to cart > cart > checkout > payment
-//
-// `how` says how the product is found on the home page: 'search' or 'filter' (by its brand).
 async function runQuantityFlow(how, { page, loginPage, homePage, productPage, cartPage, checkoutPage, newUser, product, apiRequest }) {
   const orderRequests = checkoutPage.trackOrderRequests();
 
@@ -37,7 +33,7 @@ async function runQuantityFlow(how, { page, loginPage, homePage, productPage, ca
     await test.step('3. Filter the products by the brand of the product', async () => {
       const brandId = product.brand?.id;
       expect(brandId, 'the product has no brand id').toBeTruthy();
-      // The expected number of products comes from the API
+      // expected number of products comes from the api
       const expected = await (await apiRequest.get('/products', { params: { by_brand: brandId } })).json();
 
       await homePage.brandFilter(brandId).check();
@@ -107,7 +103,6 @@ async function runQuantityFlow(how, { page, loginPage, homePage, productPage, ca
 }
 
 test.describe('Returning customer buys two of a product (end to end)', () => {
-  // A long journey on a slow shared demo needs more than the default minute
   test.describe.configure({ timeout: 180_000 });
 
   for (const how of ['search', 'filter']) {
@@ -125,10 +120,7 @@ test.describe('Returning customer buys two of a product (end to end)', () => {
   test('the order of two products creates an invoice', async ({
     page, loginPage, homePage, productPage, cartPage, checkoutPage, newUser, product, apiRequest, authApi,
   }) => {
-    // Known issue: after the first Confirm the site shows "Payment was successful", but the order
-    // request (POST /invoices) is often refused with HTTP 422 and no invoice exists. test.fail()
-    // keeps the correct expectation and flags this test when the bug is fixed.
-    test.fail(true, 'Known issue: the success message appears but no invoice is created');
+      test.fail(true, 'Known issue: the success message appears but no invoice is created');
 
     const { orderRequests } = await runQuantityFlow('search', {
       page, loginPage, homePage, productPage, cartPage, checkoutPage, newUser, product, apiRequest,

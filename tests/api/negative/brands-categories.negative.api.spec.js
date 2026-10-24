@@ -15,7 +15,7 @@ test.describe('Brands and categories (negative)', () => {
       expect(response.status()).toBe(404);
     });
 
-    // Categories API has no GET-by-id route
+    // Categories api has no GET get by id route
     test(`GET /categories/${id} returns 405`, async ({ request }) => {
       const response = await request.get(`/categories/${id}`);
 
@@ -23,39 +23,38 @@ test.describe('Brands and categories (negative)', () => {
     });
   }
 
-  // Additional negative tests
 
-  test('GET /brands with an invalid ID format is rejected', async ({ request }) => {
+  test('TC001 - GET /brands with an invalid ID format is rejected', async ({ request }) => {
     const response = await request.get('/brands/invalid-id');
 
     expect(response.status()).toBe(404);
   });
 
-  test('GET /brands with a non-numeric ID is rejected', async ({ request }) => {
+  test('TC002 - GET /brands with a non-numeric ID is rejected', async ({ request }) => {
     const response = await request.get('/brands/abc');
 
     expect(response.status()).toBe(404);
   });
 
-  test('GET /brands with an unknown ID returns an error response', async ({ request }) => {
+  test('TC003 - GET /brands with an unknown ID returns an error response', async ({ request }) => {
     const response = await request.get('/brands/999999999');
 
     expect(response.status()).toBe(404);
   });
 
-  test('POST /brands without a request body is rejected', async ({ request }) => {
+  test('TC004 - POST /brands without a request body is rejected', async ({ request }) => {
     const response = await request.post('/brands');
 
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('POST /categories without a request body is rejected', async ({ request }) => {
+  test('TC005 - POST /categories without a request body is rejected', async ({ request }) => {
     const response = await request.post('/categories');
 
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('PUT /brands with an unknown ID is rejected', async ({ request }) => {
+  test('TC006 - PUT /brands with an unknown ID is rejected', async ({ request }) => {
     const response = await request.put('/brands/999999999', {
       data: {
         name: 'Test Brand',
@@ -65,7 +64,7 @@ test.describe('Brands and categories (negative)', () => {
     expect(response.status()).toBeGreaterThanOrEqual(400);
   });
 
-  test('DELETE /brands with an unknown ID is rejected', async ({ request }) => {
+  test('TC007 - DELETE /brands with an unknown ID is rejected', async ({ request }) => {
     const response = await request.delete('/brands/999999999');
 
     expect(response.status()).toBeGreaterThanOrEqual(400);

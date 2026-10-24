@@ -4,14 +4,7 @@ const { uniqueEmail } = require('../../utils/userFactory');
 const { parsePrice } = require('../../utils/price');
 const data = require('../../test-data/ui-data.json');
 
-async function prepareCart({
-  page,
-  registerPage,
-  loginPage,
-  homePage,
-  productPage,
-  cartPage,
-}) {
+async function prepareCart({page, registerPage, loginPage, homePage, productPage, cartPage}) {
   const customer = {
     ...data.registration,
     email: uniqueEmail('cart-e2e'),

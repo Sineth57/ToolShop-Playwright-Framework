@@ -16,21 +16,21 @@ test.describe('Contact form (negative)', () => {
   });
 
   for (const { field, errorId, text } of data.contactRequiredFields) {
-    test(`an empty form shows "${text}" for ${field}`, async ({ contactPage }) => {
+    test(`TC098 - an empty form shows "${text}" for ${field}`, async ({ contactPage }) => {
       await contactPage.submit();
 
       await expect(contactPage.page.getByTestId(errorId)).toContainText(text);
     });
   }
 
-  test('an invalid email address shows an email error', async ({ contactPage }) => {
+  test('TC099 - an invalid email address shows an email error', async ({ contactPage }) => {
     await contactPage.fillForm({ ...validForm(), email: 'not-an-email' });
     await contactPage.submit();
 
     await expect(contactPage.error('email')).toBeVisible();
   });
 
-  test('a very short message shows a message error', async ({ contactPage }) => {
+  test('TC100 - a very short message shows a message error', async ({ contactPage }) => {
     // assume the form enforces a minimum message length
     await contactPage.fillForm({ ...validForm(), message: data.contact.shortMessage });
     await contactPage.submit();
@@ -38,7 +38,7 @@ test.describe('Contact form (negative)', () => {
     await expect(contactPage.error('message')).toBeVisible();
   });
 
-  test('an invalid form is not sent to the API', async ({ contactPage, page }) => {
+  test('TC101 - an invalid form is not sent to the API', async ({ contactPage, page }) => {
     let apiCalled = false;
     page.on('request', (request) => {
       if (request.url().includes('/messages') && request.method() === 'POST') apiCalled = true;

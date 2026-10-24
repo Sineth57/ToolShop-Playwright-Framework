@@ -7,7 +7,7 @@ test.describe('Login session (positive)', () => {
     await expect(loginPage.nav.signIn).toBeHidden();
   });
 
-  test('the user stays logged in on another page', async ({ homePage, page }) => {
+  test('TC214 - the user stays logged in on another page', async ({ homePage, page }) => {
     await homePage.nav.contact.click();
 
     await expect(page).toHaveURL(/contact/);
@@ -21,7 +21,7 @@ test.describe('Login session (positive)', () => {
   //   await expect(homePage.nav.signIn).toBeHidden();
   // });
 
-  test('the user stays logged in after reloading the page', async ({ homePage, page }) => {
+  test('TC215 - the user stays logged in after reloading the page', async ({ homePage, page }) => {
   await homePage.goto();
 
   await expect(homePage.productNames.first()).toBeVisible();

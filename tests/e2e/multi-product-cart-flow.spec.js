@@ -8,8 +8,7 @@ const { multiProductCart } = require('../../test-data/e2e-data.json');
 
 const RAISED = multiProductCart.raisedQuantity;
 
-// Checks the whole cart: which lines it holds, their quantities, line totals and the cart total.
-// `lines` is a list of { product, quantity }, and the expected prices come from the API.
+// Checks lines holds, their quantities, line totals and the cart total
 async function expectCart(cartPage, lines) {
   await expect(cartPage.rows).toHaveCount(lines.length);
 
@@ -26,7 +25,6 @@ async function expectCart(cartPage, lines) {
     .toBeCloseTo(expectedTotal, 2);
 }
 
-// A customer fills a cart from two categories, changes one quantity, removes one product and pays:
 // home page > category 1 > product A > category 2 > product B > category 1 > product C
 // > cart (3 lines) > A: quantity 3 > remove C > checkout (sign in) > billing address > payment
 async function runMultiProductFlow({
@@ -36,7 +34,7 @@ async function runMultiProductFlow({
   const orderRequests = checkoutPage.trackOrderRequests();
   const { firstCategory, secondCategory } = multiProductCart;
 
-  // Opens a product from the category list and reads its real price from the API
+  // opens a product from the category list and reads its real price from the API
   async function openProduct(name) {
     await categoryPage.product(name).click();
     await expect(page).toHaveURL(/\/product\//);
@@ -141,7 +139,6 @@ async function runMultiProductFlow({
 }
 
 test.describe('Multi-product cart (end to end)', () => {
-  // A long journey on a slow shared demo needs more than the default minute
   test.describe.configure({ timeout: 240_000 });
 
   test('a customer builds a cart from two categories, changes a quantity, removes a product and pays', async ({
@@ -157,7 +154,6 @@ test.describe('Multi-product cart (end to end)', () => {
   test('the order from the multi-product cart creates an invoice', async ({
     page, homePage, productPage, cartPage, checkoutPage, newUser, apiRequest, authApi,
   }) => {
-    // The journey itself must work: a failure in steps 1 to 11 fails this test
     const { orderRequests } = await runMultiProductFlow({
       page, homePage, productPage, cartPage, checkoutPage, newUser, apiRequest,
     });
@@ -165,8 +161,6 @@ test.describe('Multi-product cart (end to end)', () => {
     await test.step('12. Check that the order exists (through the API)', async () => {
       const token = await authApi.getToken(newUser.email, newUser.password);
       try {
-        // Known issue: after the first Confirm the site shows "Payment was successful", but the
-        // order request (POST /invoices) is often refused with HTTP 422 and no invoice exists
         await expectKnownIssue(
           'Known issue: the success message appears but no invoice is created',
           () => expect.poll(() => new InvoicesApi(apiRequest).count(token), { timeout: 15_000 }).toBeGreaterThan(0),

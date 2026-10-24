@@ -34,7 +34,7 @@ class ProductPage {
     return match ? Number(match[0]) : 0;
   }
 
-  // Add the product and waits until the site confirms it. the message appears or the cart badge reaches the expected number 
+  // add the product to the cart and message appears or the cart badge reaches the expected number 
   async addToCart(expectedCount = 1) {
     await this.addToCartButton.click();
     await expect(async () => {

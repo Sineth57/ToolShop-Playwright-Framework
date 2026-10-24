@@ -25,7 +25,7 @@ test.describe('Checkout (positive)', () => {
     await checkoutPage.proceedFromSignIn.click();
   });
 
-  test('the billing step shows all address fields', async ({ checkoutPage }) => {
+  test('TC177 - the billing step shows all address fields', async ({ checkoutPage }) => {
     const fields = [
       checkoutPage.country, checkoutPage.postalCode, checkoutPage.houseNumber,
       checkoutPage.street, checkoutPage.city, checkoutPage.state,
@@ -36,7 +36,7 @@ test.describe('Checkout (positive)', () => {
     }
   });
 
-  test('choosing bank transfer shows the bank detail fields', async ({ checkoutPage }) => {
+  test('TC178 - choosing bank transfer shows the bank detail fields', async ({ checkoutPage }) => {
     await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.paymentMethod.selectOption('bank-transfer');
 
@@ -45,14 +45,14 @@ test.describe('Checkout (positive)', () => {
     await expect(checkoutPage.accountNumber).toBeVisible();
   });
 
-  test('a bank transfer purchase shows the success message', async ({ checkoutPage }) => {
+  test('TC179 - a bank transfer purchase shows the success message', async ({ checkoutPage }) => {
     await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);
 
     await expect(checkoutPage.successMessage).toBeVisible();
   });
 
-  test('the purchase creates an invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
+  test('TC180 - the purchase creates an invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
     
     test.fail(true, 'Known issue #844: first Confirm shows success without creating an invoice');
 
@@ -73,7 +73,7 @@ test.describe('Checkout (positive)', () => {
     }
   });
 
-  test('confirming a second time creates the invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
+  test('TC181 - confirming a second time creates the invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
     const calls = checkoutPage.trackOrderRequests();
     await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);

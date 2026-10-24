@@ -6,7 +6,7 @@ const data = require('../../../test-data/api-data.json');
 test.use({ baseURL: API_URL });
 
 test.describe('Contact messages API (positive)', () => {
-  test('submits a contact message', async ({ request }) => {
+  test('TC080 - submits a contact message', async ({ request }) => {
     const response = await request.post('/messages', {
       data: {
         name: 'Test User',

@@ -10,10 +10,10 @@ const data = require('../../../test-data/api-data.json');
 test.use({ baseURL: API_URL });
 
 test.describe('GET /products (positive)', () => {
-  test('returns 200, JSON and a non-empty product list', async ({ request }) => {
+  test('TC081 - returns 200, JSON and a non-empty product list', async ({ request }) => {
     const response = await request.get('/products');
 
-    // Fails with a clear message if we accidentally hit the website instead of the API
+    // fail with a message if we reach the website instead of the api
     expect(response.url()).toBe(`${API_URL}/products`);
     expect(response.status()).toBe(200);
     expect(response.headers()['content-type']).toContain('application/json');
@@ -23,14 +23,14 @@ test.describe('GET /products (positive)', () => {
     expect(body.data.length).toBeGreaterThan(0);
   });
 
-  test('response body matches the products schema', async ({ request }) => {
+  test('TC082 - response body matches the products schema', async ({ request }) => {
     const response = await request.get('/products');
     expect(response.status()).toBe(200);
 
     expectSchema(productsSchema, await response.json());
   });
 
-  test('responds within the allowed time', async ({ request }) => {
+  test('TC083 - responds within the allowed time', async ({ request }) => {
     const { response, duration } = await timedGet(request, '/products');
 
     expect(response.status()).toBe(200);
@@ -38,7 +38,7 @@ test.describe('GET /products (positive)', () => {
     expect(duration).toBeLessThan(data.maxResponseMs);
   });
 
-  test('includes pagination metadata', async ({ request }) => {
+  test('TC084 - includes pagination metadata', async ({ request }) => {
     const response = await request.get('/products');
     const body = await response.json();
 
@@ -48,7 +48,7 @@ test.describe('GET /products (positive)', () => {
   });
 
   for (const pageNumber of data.pages) {
-    test(`returns page ${pageNumber} when requested`, async ({ request }) => {
+    test(`TC085 - returns page ${pageNumber} when requested`, async ({ request }) => {
       const products = new ProductsApi(request);
       const response = await products.list({ page: pageNumber });
 
@@ -59,7 +59,7 @@ test.describe('GET /products (positive)', () => {
     });
   }
 
-  test('sorts products by price ascending', async ({ request }) => {
+  test('TC086 - sorts products by price ascending', async ({ request }) => {
     const products = new ProductsApi(request);
     const response = await products.list({ sort: 'price,asc' });
 
@@ -68,7 +68,7 @@ test.describe('GET /products (positive)', () => {
     expect(prices).toEqual([...prices].sort((a, b) => a - b));
   });
 
-  test('sorts products by price descending', async ({ request }) => {
+  test('TC087 - sorts products by price descending', async ({ request }) => {
     const products = new ProductsApi(request);
     const response = await products.list({ sort: 'price,desc' });
 
@@ -78,7 +78,7 @@ test.describe('GET /products (positive)', () => {
   });
 
   for (const { min, max } of data.priceRanges) {
-    test(`filters products priced between ${min} and ${max}`, async ({ request }) => {
+    test(`TC088 - filters products priced between ${min} and ${max}`, async ({ request }) => {
       const products = new ProductsApi(request);
       const response = await products.list({ between: `price,${min},${max}` });
 
@@ -93,7 +93,7 @@ test.describe('GET /products (positive)', () => {
   }
 
   for (const term of data.searchTerms) {
-    test(`search for "${term}" returns matching products`, async ({ request }) => {
+    test(`TC089 - search for "${term}" returns matching products`, async ({ request }) => {
       const products = new ProductsApi(request);
       const response = await products.search(term);
 
@@ -103,7 +103,7 @@ test.describe('GET /products (positive)', () => {
     });
   }
 
-  test('filters products by brand', async ({ request }) => {
+  test('TC090 - filters products by brand', async ({ request }) => {
     const products = new ProductsApi(request);
     const product = await products.firstProduct();
     const brandId = product.brand?.id;
@@ -118,7 +118,7 @@ test.describe('GET /products (positive)', () => {
     }
   });
 
-  test('filters products by category', async ({ request }) => {
+  test('TC091 - filters products by category', async ({ request }) => {
     const products = new ProductsApi(request);
     const product = await products.firstProduct();
     const categoryId = product.category?.id;
@@ -132,7 +132,7 @@ test.describe('GET /products (positive)', () => {
 });
 
 test.describe('GET /products/{id} (positive)', () => {
-  test('returns the requested product and matches the product schema', async ({ request }) => {
+  test('TC092 - returns the requested product and matches the product schema', async ({ request }) => {
     const products = new ProductsApi(request);
     const product = await products.firstProduct();
 

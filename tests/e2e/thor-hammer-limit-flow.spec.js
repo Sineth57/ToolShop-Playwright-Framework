@@ -12,7 +12,6 @@ const RULE = new RegExp(purchaseLimit.ruleText, 'i');
 const CART_ADD = /^\/carts\/[^/]+$/; // the request that adds a product to a cart
 const CART_CHANGE = /^\/carts\/[^/]+/; // any request that changes a cart
 
-// Looks the product up in the API, so the test knows its real data (id, price, description)
 async function findProduct(products) {
   const response = await products.search(PRODUCT);
   expect(response.status(), 'the product search failed').toBe(200);
@@ -22,8 +21,7 @@ async function findProduct(products) {
   return product;
 }
 
-// Clicks "Add to cart" and returns what happened: whether the click was possible and the API's
-// answer to the add request (null when the page sent none)
+// Clicks "Add to cart" and returns what happened whether the click was possible and the api's answer to the add request 
 async function clickAddToCart(productPage, page) {
   const answer = page
     .waitForResponse((r) => r.request().method() === 'POST' && CART_ADD.test(new URL(r.url()).pathname), {
@@ -37,7 +35,7 @@ async function clickAddToCart(productPage, page) {
   return { clicked, response: await answer };
 }
 
-// Records what the page did and showed after an attempt, in the report and the console
+// records what the page did and showed after an attempt and the console
 async function recordAttempt(label, productPage, attempt) {
   const alerts = await productPage.alerts.allInnerTexts();
   let sent = 'the page sent no request';
@@ -52,15 +50,13 @@ async function recordAttempt(label, productPage, attempt) {
   console.log(`[message] ${label}: ${sent} / messages on the page: ${shown}`);
 }
 
-// The core check: the customer must not end up with more than the permitted number of the product,
-// neither in the cart as the API stores it nor on the cart page
 async function expectWithinLimit({ apiRequest, cart, cartPage, page, product, label }) {
   const inCart = await quantityInCart(apiRequest, cart, product.id);
 
   let onPage = 'not checked (the product is not in the cart)';
   if (inCart !== null) {
     await cartPage.open();
-    await page.reload(); // show what the server holds, not what the page remembers
+    await page.reload(); // show what the server holds
     await expect(cartPage.row(PRODUCT)).toBeVisible();
     onPage = await cartPage.quantityOf(PRODUCT).inputValue();
   }
@@ -74,7 +70,6 @@ async function expectWithinLimit({ apiRequest, cart, cartPage, page, product, la
   if (inCart !== null) expect(Number(onPage) <= LIMIT, `${message} (cart page: ${onPage})`).toBe(true);
 }
 
-// Steps 1 to 5, shared by all tests: look the product up, find it in the shop, open it
 async function openProductWithLimit({ page, homePage, productPage, products }) {
   let product;
 
@@ -110,7 +105,6 @@ async function openProductWithLimit({ page, homePage, productPage, products }) {
 }
 
 test.describe(`${PRODUCT} purchase limit (end to end)`, () => {
-  // Long journeys on a slow shared demo need more than the default minute
   test.describe.configure({ timeout: 180_000 });
 
   test(`adding 2 ${PRODUCT}s from the product page does not put 2 in the cart`, async ({

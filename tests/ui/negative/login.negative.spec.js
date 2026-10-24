@@ -8,13 +8,13 @@ test.describe('Login (negative)', () => {
   });
 
   test.describe('required fields', () => {
-    test('submitting an empty form shows required errors', async ({ loginPage }) => {
+    test('TC117 - submitting an empty form shows required errors', async ({ loginPage }) => {
       await loginPage.submitButton.click();
       await expect(loginPage.emailError).toBeVisible();
       await expect(loginPage.passwordError).toBeVisible();
     });
 
-    test('an empty email shows only the email error', async ({ loginPage }) => {
+    test('TC118 - an empty email shows only the email error', async ({ loginPage }) => {
       await loginPage.passwordInput.fill('SomePassword1!');
       await loginPage.submitButton.click();
 
@@ -22,7 +22,7 @@ test.describe('Login (negative)', () => {
       await expect(loginPage.passwordError).toBeHidden();
     });
 
-    test('an empty password shows only the password error', async ({ loginPage }) => {
+    test('TC119 - an empty password shows only the password error', async ({ loginPage }) => {
       await loginPage.emailInput.fill('someone@example.com');
       await loginPage.submitButton.click();
 
@@ -30,21 +30,21 @@ test.describe('Login (negative)', () => {
       await expect(loginPage.emailError).toBeHidden();
     });
 
-    test('fields that contain only spaces are refused', async ({ loginPage, page }) => {
+    test('TC120 - fields that contain only spaces are refused', async ({ loginPage, page }) => {
       await loginPage.login('   ', '   ');
 
       await expectErrorMessage(loginPage.anyError.first(), 'login: only spaces');
       await expect(page).toHaveURL(/auth\/login/);
     });
 
-    test('pressing Enter on an empty form shows the required errors', async ({ loginPage }) => {
+    test('TC121 - pressing Enter on an empty form shows the required errors', async ({ loginPage }) => {
       await loginPage.emailInput.press('Enter');
 
       await expect(loginPage.emailError).toBeVisible();
       await expect(loginPage.passwordError).toBeVisible();
     });
 
-    test('an error disappears once the field is corrected', async ({ loginPage }) => {
+    test('TC122 - an error disappears once the field is corrected', async ({ loginPage }) => {
       await loginPage.submitButton.click();
       await expect(loginPage.emailError).toBeVisible();
 
@@ -55,13 +55,13 @@ test.describe('Login (negative)', () => {
   });
 
   test.describe('invalid email formats', () => {
-    test('an invalid email format shows an email error', async ({ loginPage }) => {
+    test('TC123 - an invalid email format shows an email error', async ({ loginPage }) => {
       await loginPage.login('not-an-email', 'SomePassword1!');
       await expect(loginPage.emailError).toBeVisible();
     });
 
     for (const { name, value } of data.invalidEmails) {
-      test(`${name} is refused as the email`, async ({ loginPage, page }) => {
+      test(`TC124 - ${name} is refused as the email`, async ({ loginPage, page }) => {
         await loginPage.login(value, 'SomePassword1!');
 
         await expectErrorMessage(loginPage.emailError, `login: invalid email (${name})`);
@@ -71,20 +71,19 @@ test.describe('Login (negative)', () => {
   });
 
   test.describe('wrong credentials', () => {
-    test('a wrong password shows an error and stays on the login page', async ({ loginPage, newUser, page }) => {
+    test('TC125 - a wrong password shows an error and stays on the login page', async ({ loginPage, newUser, page }) => {
       await loginPage.login(newUser.email, 'WrongPassword!123');
       await expect(loginPage.loginError).toBeVisible();
       await expect(page).toHaveURL(/auth\/login/);
     });
 
-    test('an unknown email shows an error', async ({ loginPage, page }) => {
+    test('TC126 - an unknown email shows an error', async ({ loginPage, page }) => {
       await loginPage.login('nobody-here@example.com', 'SomePassword1!');
       await expect(loginPage.loginError).toBeVisible();
       await expect(page).toHaveURL(/auth\/login/);
     });
 
-    test('a wrong password and an unknown email show the same message', async ({ loginPage, newUser }) => {
-      // Different messages would tell an attacker which email addresses have an account
+    test('TC127 - a wrong password and an unknown email show the same message', async ({ loginPage, newUser }) => {
       await loginPage.login(newUser.email, 'WrongPassword!123');
       const wrongPassword = await expectErrorMessage(loginPage.loginError, 'login: wrong password');
 
@@ -95,14 +94,14 @@ test.describe('Login (negative)', () => {
       expect(wrongPassword).toBe(unknownEmail);
     });
 
-    test('the typed email is kept after a failed login', async ({ loginPage, newUser }) => {
+    test('TC128 - the typed email is kept after a failed login', async ({ loginPage, newUser }) => {
       await loginPage.login(newUser.email, 'WrongPassword!123');
       await expect(loginPage.loginError).toBeVisible();
 
       await expect(loginPage.emailInput).toHaveValue(newUser.email);
     });
 
-    test('a failed login stores no access token in the browser', async ({ loginPage, newUser, page }) => {
+    test('TC129 - a failed login stores no access token in the browser', async ({ loginPage, newUser, page }) => {
       await loginPage.login(newUser.email, 'WrongPassword!123');
       await expect(loginPage.loginError).toBeVisible();
 
@@ -116,7 +115,7 @@ test.describe('Login (negative)', () => {
       expect(stored).not.toMatch(/eyJ[\w-]+\.[\w-]+\.[\w-]+/);
     });
 
-    test('the typed email and password never appear in the address bar', async ({ loginPage, newUser, page }) => {
+    test('TC130 - the typed email and password never appear in the address bar', async ({ loginPage, newUser, page }) => {
       await loginPage.login(newUser.email, 'WrongPassword!123');
       await expect(loginPage.loginError).toBeVisible();
 
@@ -124,10 +123,9 @@ test.describe('Login (negative)', () => {
       expect(page.url()).not.toContain(encodeURIComponent(newUser.email));
     });
 
-    test('a locked account cannot log in through the form, even with the right password', async ({
+    test('TC131 - a locked account cannot log in through the form, even with the right password', async ({
       loginPage, newUser, authApi, page,
     }) => {
-      // Lock the throwaway account quickly through the API
       let locked = false;
       for (let attempt = 1; attempt <= 10 && !locked; attempt += 1) {
         const response = await authApi.login(newUser.email, `WrongPassword-${attempt}!`);
@@ -145,7 +143,7 @@ test.describe('Login (negative)', () => {
 
   test.describe('hostile and extreme input', () => {
     for (const { name, value } of data.attackPasswords) {
-      test(`${name} in the password is refused and does not run`, async ({ loginPage, page }) => {
+      test(`TC132 - ${name} in the password is refused and does not run`, async ({ loginPage, page }) => {
         const dialogs = watchDialogs(page);
 
         await loginPage.login('nobody-here@example.com', value);
@@ -156,7 +154,7 @@ test.describe('Login (negative)', () => {
       });
     }
 
-    test('a very long email and password are refused without breaking the page', async ({ loginPage, page }) => {
+    test('TC133 - a very long email and password are refused without breaking the page', async ({ loginPage, page }) => {
       await loginPage.login(`${'a'.repeat(300)}@example.com`, 'p'.repeat(1000));
 
       await expectErrorMessage(loginPage.anyError.first(), 'login: very long input');
@@ -165,13 +163,13 @@ test.describe('Login (negative)', () => {
   });
 
   test.describe('password field', () => {
-    test('the password is hidden while typing', async ({ loginPage }) => {
+    test('TC134 - the password is hidden while typing', async ({ loginPage }) => {
       await loginPage.passwordInput.fill('Secret123!');
 
       await expect(loginPage.passwordInput).toHaveAttribute('type', 'password');
     });
 
-    test('the eye button shows and hides the password', async ({ loginPage }) => {
+    test('TC135 - the eye button shows and hides the password', async ({ loginPage }) => {
       await loginPage.passwordInput.fill('Secret123!');
 
       await loginPage.passwordToggle.click();

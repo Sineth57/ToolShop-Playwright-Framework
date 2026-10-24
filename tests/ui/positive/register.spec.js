@@ -7,7 +7,7 @@ test.describe('Registration (positive)', () => {
     await registerPage.goto();
   });
 
-  test('shows every field of the registration form', async ({ registerPage }) => {
+  test('TC211 - shows every field of the registration form', async ({ registerPage }) => {
     const fields = [
       registerPage.firstName, registerPage.lastName, registerPage.dob, registerPage.country,
       registerPage.postalCode, registerPage.houseNumber, registerPage.street, registerPage.city,
@@ -20,7 +20,7 @@ test.describe('Registration (positive)', () => {
     }
   });
 
-  test('a new user can register and is sent to the login page', async ({ registerPage, page }) => {
+  test('TC212 - a new user can register and is sent to the login page', async ({ registerPage, page }) => {
     await registerPage.fillForm({ ...data.registration, email: uniqueEmail('ui') });
     await registerPage.submit();
 

@@ -6,13 +6,13 @@ const data = require('../../../test-data/api-data.json');
 test.use({ baseURL: API_URL });
 
 test.describe('Contact messages API (negative)', () => {
-  test('rejects an empty request body', async ({ request }) => {
+  test('TC034 - rejects an empty request body', async ({ request }) => {
     const response = await request.post('/messages', { data: {} });
 
     expect(response.status()).toBe(422);
   });
 
-  test('rejects an invalid email address', async ({ request }) => {
+  test('TC035 - rejects an invalid email address', async ({ request }) => {
     const response = await request.post('/messages', {
       data: {
         name: 'Test User',
@@ -25,7 +25,7 @@ test.describe('Contact messages API (negative)', () => {
     expect(response.status()).toBe(422);
   });
 
-  test('rejects a message without the message text', async ({ request }) => {
+  test('TC036 - rejects a message without the message text', async ({ request }) => {
     const response = await request.post('/messages', {
       data: {
         name: 'Test User',

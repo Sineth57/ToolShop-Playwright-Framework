@@ -31,7 +31,7 @@ class RegisterPage {
     return this.page.getByTestId(testId);
   }
 
-  // validation message(email-error)
+  // validation message(email error)
   error(testId) {
     return this.page.getByTestId(testId);
   }

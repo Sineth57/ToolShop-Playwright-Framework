@@ -6,7 +6,7 @@ const { buildUserPayload } = require('../../../utils/userFactory');
 test.use({ baseURL: API_URL });
 
 test.describe('Authentication API (positive)', () => {
-  test('registers a new user and does not expose the password', async ({ request }) => {
+  test('TC065 - registers a new user and does not expose the password', async ({ request }) => {
     const authApi = new AuthApi(request);
     const user = buildUserPayload();
 
@@ -16,7 +16,7 @@ test.describe('Authentication API (positive)', () => {
     expect(JSON.parse(text).password).toBeUndefined();
   });
 
-  test('login returns a bearer token with an expiry', async ({ request }) => {
+  test('TC066 - login returns a bearer token with an expiry', async ({ request }) => {
     const authApi = new AuthApi(request);
     const user = buildUserPayload();
     await authApi.register(user);
@@ -30,7 +30,7 @@ test.describe('Authentication API (positive)', () => {
     expect(typeof body.expires_in).toBe('number');
   });
 
-  test('registers, logs in and reads the profile', async ({ request }) => {
+  test('TC067 - registers, logs in and reads the profile', async ({ request }) => {
     const authApi = new AuthApi(request);
     const { user, token } = await authApi.registerAndLogin();
 
@@ -40,7 +40,7 @@ test.describe('Authentication API (positive)', () => {
     expect(profile.email).toBe(user.email);
   });
 
-  test('a valid token grants access to the invoices list', async ({ request }) => {
+  test('TC068 - a valid token grants access to the invoices list', async ({ request }) => {
     const authApi = new AuthApi(request);
     const { token } = await authApi.registerAndLogin();
 

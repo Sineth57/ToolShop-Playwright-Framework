@@ -5,23 +5,20 @@ const { parsePrice } = require('../../utils/price');
 const { mark, reportOrderRequests, expectKnownIssue } = require('../../utils/orderReport');
 const data = require('../../test-data/ui-data.json');
 
-// The number on the cart icon must be `count`, wherever the customer is in the shop
 async function expectCartBadge(productPage, count, where) {
   await expect
     .poll(() => productPage.cartCount(), { message: `the cart badge should show ${count} ${where}` })
     .toBe(count);
 }
 
-// The cart page lists the product once, with quantity 1 and the product's real price as the total
+// cart page lists the product once with quantity 1 and the real price as the total
 async function expectCartHoldsProduct(cartPage, product) {
   await expect(cartPage.row(product.name)).toBeVisible();
   await expect(cartPage.quantityOf(product.name)).toHaveValue('1');
   await expect.poll(async () => parsePrice(await cartPage.total.innerText())).toBeCloseTo(product.price, 2);
 }
 
-// A guest fills a cart, reaches the sign-in step of the checkout, has no account and registers
-// through the link on that step, logs in, and the cart must still be there:
-// product page > cart > checkout sign-in step > register link > register > login > cart > checkout > payment
+// product page > cart > checkout signin step > register link > register > login > cart > checkout > payment
 async function runRegisterInCheckoutFlow({
   page, registerPage, loginPage, productPage, cartPage, checkoutPage, product,
 }) {
@@ -104,7 +101,6 @@ async function runRegisterInCheckoutFlow({
 }
 
 test.describe('Registering in the middle of the checkout (end to end)', () => {
-  // A long journey on a slow shared demo needs more than the default minute
   test.describe.configure({ timeout: 240_000 });
 
   test('a guest registers from the checkout sign-in step, logs in and completes the purchase', async ({
@@ -120,7 +116,6 @@ test.describe('Registering in the middle of the checkout (end to end)', () => {
   test('the order of the customer who registered in the checkout creates an invoice', async ({
     page, registerPage, loginPage, productPage, cartPage, checkoutPage, product, authApi, apiRequest,
   }) => {
-    // The journey itself must work: a failure in steps 1 to 11 fails this test
     const { customer, orderRequests } = await runRegisterInCheckoutFlow({
       page, registerPage, loginPage, productPage, cartPage, checkoutPage, product,
     });
@@ -128,8 +123,7 @@ test.describe('Registering in the middle of the checkout (end to end)', () => {
     await test.step('12. Check that the order exists (through the API)', async () => {
       const token = await authApi.getToken(customer.email, customer.password);
       try {
-        // Known issue: after the first Confirm the site shows "Payment was successful", but the
-        // order request (POST /invoices) is often refused with HTTP 422 and no invoice exists
+       
         await expectKnownIssue(
           'Known issue: the success message appears but no invoice is created',
           () => expect.poll(() => new InvoicesApi(apiRequest).count(token), { timeout: 15_000 }).toBeGreaterThan(0),

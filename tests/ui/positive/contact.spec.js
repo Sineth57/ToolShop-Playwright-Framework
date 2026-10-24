@@ -7,7 +7,7 @@ test.describe('Contact form (positive)', () => {
     await contactPage.goto();
   });
 
-  test('shows every field of the contact form', async ({ contactPage }) => {
+  test('TC182 - shows every field of the contact form', async ({ contactPage }) => {
     const fields = [
       contactPage.firstName, contactPage.lastName, contactPage.email, contactPage.subject,
       contactPage.message, contactPage.attachment, contactPage.submitButton,
@@ -18,13 +18,13 @@ test.describe('Contact form (positive)', () => {
     }
   });
 
-  test('the subject list offers the customer service option', async ({ contactPage }) => {
+  test('TC183 - the subject list offers the customer service option', async ({ contactPage }) => {
     await contactPage.subject.selectOption(data.contact.subject);
 
     await expect(contactPage.subject).toHaveValue(data.contact.subject);
   });
 
-  test('a valid message is accepted by the API', async ({ contactPage }) => {
+  test('TC184 - a valid message is accepted by the API', async ({ contactPage }) => {
     await contactPage.fillForm({
       firstName: data.contact.firstName,
       lastName: data.contact.lastName,
@@ -38,7 +38,7 @@ test.describe('Contact form (positive)', () => {
     expect([200, 201]).toContain(response.status());
   });
 
-  test('a required-field error disappears once the field is filled', async ({ contactPage }) => {
+  test('TC185 - a required-field error disappears once the field is filled', async ({ contactPage }) => {
     await contactPage.submit();
     await expect(contactPage.error('first-name')).toBeVisible();
 

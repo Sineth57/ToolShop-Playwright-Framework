@@ -9,7 +9,7 @@ const data = require('../../../test-data/api-data.json');
 test.use({ baseURL: API_URL });
 
 test.describe('Brands API (positive)', () => {
-  test('GET /brands returns a non-empty list matching the schema', async ({ request }) => {
+  test('TC069 - GET /brands returns a non-empty list matching the schema', async ({ request }) => {
     const response = await request.get('/brands');
 
     expect(response.status()).toBe(200);
@@ -18,7 +18,7 @@ test.describe('Brands API (positive)', () => {
     expectSchema(brandsSchema, body);
   });
 
-  test('GET /brands/{id} returns the requested brand', async ({ request }) => {
+  test('TC070 - GET /brands/{id} returns the requested brand', async ({ request }) => {
     const brands = await (await request.get('/brands')).json();
     const brand = brands[0];
 
@@ -29,7 +29,7 @@ test.describe('Brands API (positive)', () => {
     expect(body.name).toBe(brand.name);
   });
 
-  test('GET /brands responds within the allowed time', async ({ request }) => {
+  test('TC071 - GET /brands responds within the allowed time', async ({ request }) => {
     const { response, duration } = await timedGet(request, '/brands');
 
     expect(response.status()).toBe(200);
@@ -38,7 +38,7 @@ test.describe('Brands API (positive)', () => {
 });
 
 test.describe('Categories API (positive)', () => {
-  test('GET /categories returns a non-empty list matching the schema', async ({ request }) => {
+  test('TC072 - GET /categories returns a non-empty list matching the schema', async ({ request }) => {
     const response = await request.get('/categories');
 
     expect(response.status()).toBe(200);
@@ -47,7 +47,7 @@ test.describe('Categories API (positive)', () => {
     expectSchema(categoriesSchema, body);
   });
 
-  test('GET /categories/tree returns a non-empty list', async ({ request }) => {
+  test('TC073 - GET /categories/tree returns a non-empty list', async ({ request }) => {
     const response = await request.get('/categories/tree');
 
     expect(response.status()).toBe(200);
@@ -56,14 +56,14 @@ test.describe('Categories API (positive)', () => {
     expect(body.length).toBeGreaterThan(0);
   });
 
-  test('GET /categories/tree nodes have an id and a name', async ({ request }) => {
+  test('TC074 - GET /categories/tree nodes have an id and a name', async ({ request }) => {
     const response = await request.get('/categories/tree');
 
     expect(response.status()).toBe(200);
     expectSchema(categoriesSchema, await response.json());
   });
 
-  test('GET /categories responds within the allowed time', async ({ request }) => {
+  test('TC075 - GET /categories responds within the allowed time', async ({ request }) => {
     const { response, duration } = await timedGet(request, '/categories');
 
     expect(response.status()).toBe(200);

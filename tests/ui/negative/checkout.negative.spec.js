@@ -10,7 +10,7 @@ test.describe('Checkout (negative)', () => {
   });
 
   for (const { field, key } of data.checkout.requiredAddressFields) {
-    test(`cannot continue to payment with an empty ${field}`, async ({ checkoutPage }) => {
+    test(`TC096 - cannot continue to payment with an empty ${field}`, async ({ checkoutPage }) => {
       
       await checkoutPage.fillBillingAddress(data.checkout.address);
       await checkoutPage.waitForValidAddress();
@@ -23,7 +23,7 @@ test.describe('Checkout (negative)', () => {
     });
   }
 
-  test('empty bank details show validation messages', async ({ checkoutPage, page }) => {
+  test('TC097 - empty bank details show validation messages', async ({ checkoutPage, page }) => {
     await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.paymentMethod.selectOption('bank-transfer');
 

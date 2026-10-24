@@ -7,10 +7,7 @@ const data = require('../../../test-data/home-negative-data.json');
 const API_ORIGIN = new URL(API_URL).origin;
 const CORS = { 'access-control-allow-origin': '*' };
 
-// After a search or filter change the page must show either products or a "no results" message,
-// the API must not have answered with a server error, and no script may have run
 async function expectHandled(homePage, tracker, dialogs = []) {
-  // Give the page time to ask the API (if it does at all) before judging the result
   await expect
     .poll(() => tracker.calls.length, { timeout: 10_000 })
     .toBeGreaterThan(0)
@@ -23,12 +20,11 @@ async function expectHandled(homePage, tracker, dialogs = []) {
   }
 }
 
-// Replaces the answers of the product list request
+// replaces the answers of the product list request
 async function mockProductList(page, respond) {
   await page.route((url) => url.origin === API_ORIGIN && url.pathname === '/products', respond);
 }
 
-// The site must still work when the product list is missing: menu visible, no products, links work
 async function expectSiteStillUsable(homePage, page) {
   await expect(homePage.nav.contact).toBeVisible();
   await expect(homePage.productNames).toHaveCount(0);
@@ -51,7 +47,7 @@ test.describe('Home page (negative)', () => {
     });
 
     for (const { name, value } of data.searchTerms) {
-      test(`searching for ${name} is handled safely`, async ({ homePage, page }) => {
+      test(`TC102 - searching for ${name} is handled safely`, async ({ homePage, page }) => {
         const dialogs = watchDialogs(page);
         const tracker = trackApi(page);
 
@@ -61,7 +57,7 @@ test.describe('Home page (negative)', () => {
       });
     }
 
-    test('searching for a very long text is handled safely', async ({ homePage, page }) => {
+    test('TC103 - searching for a very long text is handled safely', async ({ homePage, page }) => {
       const tracker = trackApi(page);
 
       await homePage.search('a'.repeat(300));
@@ -69,7 +65,7 @@ test.describe('Home page (negative)', () => {
       await expectHandled(homePage, tracker);
     });
 
-    test('submitting an empty search shows the full list again', async ({ homePage }) => {
+    test('TC104 - submitting an empty search shows the full list again', async ({ homePage }) => {
       const initialCount = await homePage.productNames.count();
 
       await homePage.searchInput.fill('');
@@ -85,14 +81,14 @@ test.describe('Home page (negative)', () => {
       await expect(homePage.productNames.first()).toBeVisible();
     });
 
-    test('a search with no matches shows no products', async ({ homePage }) => {
+    test('TC105 - a search with no matches shows no products', async ({ homePage }) => {
       await homePage.search('zzzzqqqqxxxx');
 
       await expect(homePage.productNames).toHaveCount(0);
       await expectErrorMessage(homePage.noResults, 'home: empty search result');
     });
 
-    test('the reset button brings the products back after an empty result', async ({ homePage }) => {
+    test('TC106 - the reset button brings the products back after an empty result', async ({ homePage }) => {
       const initialCount = await homePage.productNames.count();
       await homePage.search('zzzzqqqqxxxx');
       await expect(homePage.productNames).toHaveCount(0);
@@ -102,7 +98,7 @@ test.describe('Home page (negative)', () => {
       await expect(homePage.productNames).toHaveCount(initialCount);
     });
 
-    test('switching on the eco-friendly filter on an empty result does not break the page', async ({ homePage, page }) => {
+    test('TC107 - switching on the eco-friendly filter on an empty result does not break the page', async ({ homePage, page }) => {
       await homePage.search('zzzzqqqqxxxx');
       await expect(homePage.productNames).toHaveCount(0);
       const tracker = trackApi(page);
@@ -114,7 +110,7 @@ test.describe('Home page (negative)', () => {
       expect(tracker.serverErrors, 'the API answered with a server error').toEqual([]);
     });
 
-    test('sorting an empty result does not break the page', async ({ homePage, page }) => {
+    test('TC108 - sorting an empty result does not break the page', async ({ homePage, page }) => {
       await homePage.search('zzzzqqqqxxxx');
       await expect(homePage.productNames).toHaveCount(0);
       const tracker = trackApi(page);
@@ -133,7 +129,7 @@ test.describe('Home page (negative)', () => {
       await expect(homePage.productNames.first()).toBeVisible();
     });
 
-    test('the previous button cannot be used on the first page', async ({ homePage }) => {
+    test('TC109 - the previous button cannot be used on the first page', async ({ homePage }) => {
       const disabled = await homePage.isDisabled(homePage.previousPage);
 
       expect(disabled, 'the "previous" button is still active on the first page').toBe(true);
@@ -155,11 +151,9 @@ test.describe('Home page (negative)', () => {
     //   expect(disabled, 'the "next" button is still active on the last page').toBe(true);
     // });
 
-       test('the next button cannot be used on the last page', async ({ homePage }) => {
+       test('TC110 - the next button cannot be used on the last page', async ({ homePage }) => {
       test.setTimeout(120_000);
-      const MAX_PAGES = 50; // safety limit, so a button that never gets disabled cannot loop forever
-
-      // Go forward until the app itself disables "next", waiting for each page to show new products
+      const MAX_PAGES = 50; 
       let pagesVisited = 1;
       while (!(await homePage.isDisabled(homePage.nextPage)) && pagesVisited < MAX_PAGES) {
         const before = (await homePage.names())[0];
@@ -173,11 +167,11 @@ test.describe('Home page (negative)', () => {
       expect(disabled, `the "next" button is still active after ${pagesVisited} pages`).toBe(true);
     });
 
-    
+
   });
 
   test.describe('price slider', () => {
-    test('moving the maximum price down to the minimum does not break the page', async ({ homePage, page }) => {
+    test('TC111 - moving the maximum price down to the minimum does not break the page', async ({ homePage, page }) => {
       await homePage.goto();
       await expect(homePage.productNames.first()).toBeVisible();
       const tracker = trackApi(page);
@@ -191,7 +185,7 @@ test.describe('Home page (negative)', () => {
 
   test.describe('unknown addresses', () => {
     for (const { name, path } of data.unknownAddresses) {
-      test(`${name} does not break the site`, async ({ homePage, page }) => {
+      test(`TC112 - ${name} does not break the site`, async ({ homePage, page }) => {
         const dialogs = watchDialogs(page);
         const tracker = trackApi(page);
 
@@ -209,9 +203,8 @@ test.describe('Home page (negative)', () => {
     }
   });
 
-  // The product API is replaced by a fake that fails, to see how the page copes
   test.describe('problems with the product API (simulated)', () => {
-    test('a server error (HTTP 500) leaves the site usable', async ({ homePage, page }) => {
+    test('TC113 - a server error (HTTP 500) leaves the site usable', async ({ homePage, page }) => {
       const pageErrors = watchPageErrors(page);
       await mockProductList(page, (route) =>
         route.fulfill({
@@ -228,7 +221,7 @@ test.describe('Home page (negative)', () => {
       await attachPageErrors(pageErrors);
     });
 
-    test('a failed network connection leaves the site usable', async ({ homePage, page }) => {
+    test('TC114 - a failed network connection leaves the site usable', async ({ homePage, page }) => {
       const pageErrors = watchPageErrors(page);
       await mockProductList(page, (route) => route.abort('failed'));
 
@@ -238,7 +231,7 @@ test.describe('Home page (negative)', () => {
       await attachPageErrors(pageErrors);
     });
 
-    test('an answer that is not valid JSON leaves the site usable', async ({ homePage, page }) => {
+    test('TC115 - an answer that is not valid JSON leaves the site usable', async ({ homePage, page }) => {
       const pageErrors = watchPageErrors(page);
       await mockProductList(page, (route) =>
         route.fulfill({
@@ -255,7 +248,7 @@ test.describe('Home page (negative)', () => {
       await attachPageErrors(pageErrors);
     });
 
-    test('an empty product list shows the "no results" state without errors', async ({ homePage, page }) => {
+    test('TC116 - an empty product list shows the "no results" state without errors', async ({ homePage, page }) => {
       const pageErrors = watchPageErrors(page);
       await mockProductList(page, (route) =>
         route.fulfill({

@@ -6,7 +6,7 @@ const { ProductsApi } = require('../../../api/ProductsApi');
 test.use({ baseURL: API_URL });
 
 test.describe('Carts API (positive)', () => {
-  test('creates an empty cart', async ({ request }) => {
+  test('TC076 - creates an empty cart', async ({ request }) => {
     const cartApi = new CartApi(request);
 
     const response = await cartApi.create();
@@ -15,7 +15,7 @@ test.describe('Carts API (positive)', () => {
     expect(body.id).toBeTruthy();
   });
 
-  test('adds a product to a cart', async ({ request }) => {
+  test('TC077 - adds a product to a cart', async ({ request }) => {
     const cartApi = new CartApi(request);
     const product = await new ProductsApi(request).firstProduct();
     const cartId = await cartApi.createCartId();
@@ -24,7 +24,7 @@ test.describe('Carts API (positive)', () => {
     expect(response.status()).toBe(200);
   });
 
-  test('lists the added product in the cart', async ({ request }) => {
+  test('TC078 - lists the added product in the cart', async ({ request }) => {
     const cartApi = new CartApi(request);
     const product = await new ProductsApi(request).firstProduct();
     const cartId = await cartApi.createCartId();
@@ -37,7 +37,7 @@ test.describe('Carts API (positive)', () => {
     expect(ids).toContain(product.id);
   });
 
-  test('stores the requested quantity', async ({ request }) => {
+  test('TC079 - stores the requested quantity', async ({ request }) => {
     const cartApi = new CartApi(request);
     const product = await new ProductsApi(request).firstProduct();
     const cartId = await cartApi.createCartId();

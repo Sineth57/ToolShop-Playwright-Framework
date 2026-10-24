@@ -83,7 +83,6 @@ async function runPurchaseFlow({ page, registerPage, loginPage, homePage, produc
 }
 
 test.describe('Full purchase flow (end to end)', () => {
-  // A long journey on a slow shared demo needs more than the default minute
   test.describe.configure({ timeout: 180_000 });
 
   test('a new customer registers, logs in, buys a product and sees the order confirmation', async ({
@@ -99,9 +98,6 @@ test.describe('Full purchase flow (end to end)', () => {
   test('the purchase made through the full flow creates an invoice', async ({
     page, registerPage, loginPage, homePage, productPage, cartPage, checkoutPage, authApi, apiRequest,
   }) => {
-    // Known issue: after the first Confirm the site shows "Payment was successful", but the order
-    // request (POST /invoices) is often refused with HTTP 422 and no invoice exists. test.fail()
-    // keeps the correct expectation and flags this test when the bug is fixed.
     test.fail(true, 'Known issue: the success message appears but no invoice is created');
 
     const { customer, orderRequests } = await runPurchaseFlow({

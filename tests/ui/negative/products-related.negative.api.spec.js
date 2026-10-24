@@ -8,8 +8,8 @@ const KNOWN_ISSUE = 'Known application bug: GET /products/{id}/related answers H
 
 test.describe('GET /products/{id}/related (negative)', () => {
   for (const { name, id } of data.unknownIds) {
-    test(`a product with ${name} as the id does not cause a server error`, async ({ request }) => {
-      // The expectation stays correct (a 4xx); the test is flagged as soon as the bug is fixed
+    test(`TC151 - a product with ${name} as the id does not cause a server error`, async ({ request }) => {
+      
       test.fail(true, KNOWN_ISSUE);
 
       const response = await request.get(`/products/${encodeURIComponent(id)}/related`);

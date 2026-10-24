@@ -6,16 +6,15 @@ const data = require('../../../test-data/api-data.json');
 
 test.use({ baseURL: API_URL });
 
-// The most failed logins the lockout test will try before it decides the account is not protected
+// most failed logins count
 const MAX_FAILED_ATTEMPTS = 10;
 
-// No error response may ever hand out a token
 async function expectNoToken(response) {
   const body = await response.json().catch(() => ({}));
   expect(body.access_token, 'an error response must not contain a token').toBeUndefined();
 }
 
-// Creates a throwaway user, so the shared seeded accounts are never locked out
+// creating a throwaway user, so the shared seeded accounts are never locked out
 async function registerThrowawayUser(authApi) {
   const user = buildUserPayload();
   const register = await authApi.register(user);
@@ -24,7 +23,7 @@ async function registerThrowawayUser(authApi) {
 }
 
 test.describe('POST /users/login (negative)', () => {
-  test.describe('wrong credentials', () => {
+  test.describe('TC022 - wrong credentials', () => {
     test('rejects a registered user with a wrong password', async ({ request }) => {
       const authApi = new AuthApi(request);
       const user = await registerThrowawayUser(authApi);
@@ -35,14 +34,14 @@ test.describe('POST /users/login (negative)', () => {
       await expectNoToken(response);
     });
 
-    test('rejects an email that is not registered', async ({ request }) => {
+    test('TC023 - rejects an email that is not registered', async ({ request }) => {
       const response = await new AuthApi(request).login('nobody-here@example.com', 'SomePassword!123');
 
       expect(response.status()).toBe(401);
       await expectNoToken(response);
     });
 
-    test('treats the password as case sensitive', async ({ request }) => {
+    test('TC024 - treats the password as case sensitive', async ({ request }) => {
       const authApi = new AuthApi(request);
       const user = await registerThrowawayUser(authApi);
 
@@ -52,8 +51,7 @@ test.describe('POST /users/login (negative)', () => {
       await expectNoToken(response);
     });
 
-    test('gives the same error for a wrong password and an unknown email', async ({ request }) => {
-      // Different answers would tell an attacker which email addresses have an account
+    test('TC025 - gives the same error for a wrong password and an unknown email', async ({ request }) => {
       const authApi = new AuthApi(request);
       const user = await registerThrowawayUser(authApi);
 
@@ -65,7 +63,7 @@ test.describe('POST /users/login (negative)', () => {
       expect(await wrongPassword.json()).toEqual(await unknownEmail.json());
     });
 
-    test('a single failed attempt does not stop the correct password from working', async ({ request }) => {
+    test('TC026 - a single failed attempt does not stop the correct password from working', async ({ request }) => {
       const authApi = new AuthApi(request);
       const user = await registerThrowawayUser(authApi);
 
@@ -78,13 +76,13 @@ test.describe('POST /users/login (negative)', () => {
   });
 
   test.describe('invalid input', () => {
-    test('rejects an empty request body', async ({ request }) => {
+    test('TC027 - rejects an empty request body', async ({ request }) => {
       const response = await request.post('/users/login', { data: {} });
 
       expect([401, 422]).toContain(response.status());
     });
 
-    test('rejects a login without a password', async ({ request }) => {
+    test('TC028 - rejects a login without a password', async ({ request }) => {
       const response = await request.post('/users/login', {
         data: { email: 'nobody-here@example.com' },
       });
@@ -93,19 +91,15 @@ test.describe('POST /users/login (negative)', () => {
     });
 
     for (const { name, data: payload, knownIssue } of data.invalidLoginPayloads) {
-      test(`rejects a login with ${name}`, async ({ request }) => {
-        // Payloads with a known defect keep the correct expectation and are flagged when fixed
+      test(`TC029 - rejects a login with ${name}`, async ({ request }) => {
         test.fail(Boolean(knownIssue), knownIssue);
-
         const response = await request.post('/users/login', { data: payload });
-
-        // A 5xx here would mean the server crashed on bad input
         expect([400, 401, 422]).toContain(response.status());
         await expectNoToken(response);
       });
     }
 
-    test('rejects a very long email and password without crashing', async ({ request }) => {
+    test('TC030 - rejects a very long email and password without crashing', async ({ request }) => {
       const response = await request.post('/users/login', {
         data: { email: `${'a'.repeat(300)}@example.com`, password: 'p'.repeat(10_000) },
       });
@@ -114,7 +108,7 @@ test.describe('POST /users/login (negative)', () => {
       await expectNoToken(response);
     });
 
-    test('rejects a request body that is not valid JSON', async ({ request }) => {
+    test('TC031 - rejects a request body that is not valid JSON', async ({ request }) => {
       const response = await request.post('/users/login', {
         headers: { 'Content-Type': 'application/json' },
         data: '{"email": "broken"',
@@ -128,10 +122,9 @@ test.describe('POST /users/login (negative)', () => {
 
   test.describe('unsupported requests', () => {
     for (const method of ['GET', 'PUT', 'DELETE']) {
-      test(`${method} /users/login is refused and issues no token`, async ({ request }) => {
+      test(`TC032 - ${method} /users/login is refused and issues no token`, async ({ request }) => {
         const response = await request.fetch('/users/login', { method });
 
-        // HTTP defines 405 (Method Not Allowed) for this, but the API currently answers 401
         expect([401, 405]).toContain(response.status());
         await expectNoToken(response);
       });
@@ -139,7 +132,7 @@ test.describe('POST /users/login (negative)', () => {
   });
 
   test.describe('account protection', () => {
-    test('locks the account after repeated failed attempts', async ({ request }) => {
+    test('TC033 - locks the account after repeated failed attempts', async ({ request }) => {
       const authApi = new AuthApi(request);
       const user = await registerThrowawayUser(authApi);
 
@@ -154,7 +147,7 @@ test.describe('POST /users/login (negative)', () => {
       }
       expect(lockedAfter, `the account was not locked after ${MAX_FAILED_ATTEMPTS} failed attempts`).not.toBeNull();
 
-      // While the account is locked, even the correct password is refused
+      // when the account is locked even the correct password is refused
       const locked = await authApi.login(user.email, user.password);
       expect(locked.status()).toBe(423);
       await expectNoToken(locked);
