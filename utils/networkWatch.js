@@ -7,7 +7,7 @@ const API_ORIGIN = new URL(API_URL).origin;
 const CORS_HEADERS = { 'access-control-allow-origin': '*' };
 
 // Records every response the page receives from the API, and separately the ones that are
-// server errors (HTTP 5xx)
+// server errors 
 function trackApi(page) {
   const calls = [];
   const serverErrors = [];
@@ -34,8 +34,7 @@ function watchPageErrors(page) {
   return errors;
 }
 
-// Intercepts the page's requests to the API whose path matches `pathPattern` (a RegExp).
-// `respond` receives the route and may fulfill, abort or continue it.
+// Intercepts the page's requests to the API whose path matches `pathPattern` `respond` receives the route and may fulfill, abort or continue it.
 async function mockApi(page, pathPattern, respond) {
   await page.route((url) => url.origin === API_ORIGIN && pathPattern.test(url.pathname), respond);
 }

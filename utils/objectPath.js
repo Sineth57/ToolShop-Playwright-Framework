@@ -1,4 +1,4 @@
-// Sets a value inside an object by path, e.g. setPath(user, 'address.street', 'x')
+// Sets a value inside an object by path,-> setPath(user, 'address.street', 'x')
 function setPath(object, path, value) {
   const keys = path.split('.');
   const last = keys.pop();

@@ -16,10 +16,6 @@ async function reportOrderRequests(calls) {
   console.log(`[${test.info().title}] order requests:\n${text}`);
 }
 
-// Runs ONE check that currently fails because of a known defect, and nothing else in the test.
-// While the defect exists the check fails, and the test stays green with a "known issue" note.
-// As soon as the check passes, the test FAILS, as a reminder that the defect is fixed and this
-// workaround can be removed. Unlike test.fail(), a failure in an earlier step is never hidden.
 async function expectKnownIssue(description, check) {
   let passed = false;
   try {

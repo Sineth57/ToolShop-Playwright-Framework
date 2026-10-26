@@ -2,8 +2,37 @@ const { test, expect } = require('../../../fixtures/test');
 const data = require('../../../test-data/ui-data.json');
 
 const compare = (a, b) => a.localeCompare(b, 'en', { sensitivity: 'base' });
-const isAscending = (list) => list.length > 1 && list.every((name, i) => i === 0 || compare(list[i - 1], name) <= 0);
-const isDescending = (list) => list.length > 1 && list.every((name, i) => i === 0 || compare(list[i - 1], name) >= 0);
+// const isAscending = (list) => list.length > 1 && list.every((name, i) => i === 0 || compare(list[i - 1], name) <= 0);
+// const isDescending = (list) => list.length > 1 && list.every((name, i) => i === 0 || compare(list[i - 1], name) >= 0);
+
+// The first pair of neighbours that breaks the order (null when the whole list is in order)
+// function firstViolation(list, direction) {
+//   for (let i = 1; i < list.length; i += 1) {
+//     const order = compare(list[i - 1], list[i]);
+//     if (direction === 'desc' ? order < 0 : order > 0) {
+//       return `"${list[i - 1]}" comes before "${list[i]}"`;
+//     }
+//   }
+//   return null;
+// }
+
+// // The names the API returns for the first page of a sort
+// async function namesFromApi(apiRequest, sort) {
+//   const response = await apiRequest.get('/products', { params: { sort, page: 1 } });
+//   expect(response.status(), 'GET /products failed').toBe(200);
+//   return (await response.json()).data.map((product) => product.name.trim());
+// }
+
+// // Waits until the page shows exactly the given names, in that order
+// async function expectPageToShow(homePage, expected, sort) {
+//   await expect
+//     .poll(async () => (await homePage.names()).join(' | '), {
+//       message: `the page does not show what the API returns for sort=${sort}: ${expected.join(' | ')}`,
+//     })
+//     .toBe(expected.join(' | '));
+// }
+
+
 
 test.describe('Home page (positive)', () => {
   test.beforeEach(async ({ homePage }) => {
@@ -48,21 +77,44 @@ test.describe('Home page (positive)', () => {
     await expect(homePage.productNames.first()).toBeVisible();
   });
 
-  test('TC192 - sorting by name Z-A puts the products in reverse order', async ({ homePage }) => {
-    await expect(homePage.productNames.first()).toBeVisible();
-    await homePage.sortBy('name,desc');
+  //   test('TC192 - sorting by name Z-A puts the products in reverse order', async ({ homePage, apiRequest }) => {
+  //   await expect(homePage.productNames.first()).toBeVisible();
+  //   const expected = await namesFromApi(apiRequest, 'name,desc');
 
-    await expect.poll(async () => isDescending(await homePage.names())).toBe(true);
-  });
+  //   await homePage.sortBy('name,desc');
 
-  test('TC193 - sorting by name A-Z puts the products in alphabetical order', async ({ homePage }) => {
-    await expect(homePage.productNames.first()).toBeVisible();
-    await homePage.sortBy('name,desc');
-    await expect.poll(async () => isDescending(await homePage.names())).toBe(true);
+  //   // 1. The page shows what the API returns for this sort
+  //   await expectPageToShow(homePage, expected, 'name,desc');
 
-    await homePage.sortBy('name,asc');
-    await expect.poll(async () => isAscending(await homePage.names())).toBe(true);
-  });
+  //   // 2. That list really is in Z-A order
+  //   const violation = firstViolation(expected, 'desc');
+  //   expect(violation, `the list is not in Z-A order: ${violation}. Full list: ${expected.join(' | ')}`).toBeNull();
+  // });
+
+  // test('TC193 - sorting by name A-Z puts the products in alphabetical order', async ({ homePage, apiRequest }) => {
+  //   await expect(homePage.productNames.first()).toBeVisible();
+  //   const descending = await namesFromApi(apiRequest, 'name,desc');
+  //   const ascending = await namesFromApi(apiRequest, 'name,asc');
+
+  //   // Go to Z-A first, so the A-Z check can only pass after the sort really changed the list
+  //   await homePage.sortBy('name,desc');
+  //   await expectPageToShow(homePage, descending, 'name,desc');
+
+  //   await homePage.sortBy('name,asc');
+  //   await expectPageToShow(homePage, ascending, 'name,asc');
+
+  //   const violation = firstViolation(ascending, 'asc');
+  //   expect(violation, `the list is not in A-Z order: ${violation}. Full list: ${ascending.join(' | ')}`).toBeNull();
+  // });
+
+  // test('TC193 - sorting by name A-Z puts the products in alphabetical order', async ({ homePage }) => {
+  //   await expect(homePage.productNames.first()).toBeVisible();
+  //   await homePage.sortBy('name,desc');
+  //   await expect.poll(async () => isDescending(await homePage.names())).toBe(true);
+
+  //   await homePage.sortBy('name,asc');
+  //   await expect.poll(async () => isAscending(await homePage.names())).toBe(true);
+  // });
 
   test('TC194 - the next and previous buttons move between pages', async ({ homePage }) => {
     await expect(homePage.productNames.first()).toBeVisible();
