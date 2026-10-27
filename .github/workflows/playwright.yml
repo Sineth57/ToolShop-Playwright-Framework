@@ -16,6 +16,8 @@ permissions:
 
 env:
   CI: true
+  BASE_URL: http://localhost:4200
+  API_URL: http://localhost:8091
 
 jobs:
   test:
