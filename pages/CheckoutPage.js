@@ -92,6 +92,19 @@ class CheckoutPage {
     await this.confirm();
   }
 
+  async getPaymentMethods() {
+  await expect(this.paymentMethod).toBeVisible();
+
+  return await this.paymentMethod.locator('option').evaluateAll(
+    options =>
+      options.map(option => ({
+        text: option.textContent.trim(),
+        value: option.value,
+        disabled: option.disabled,
+      }))
+  );
+}
+
   async confirm() {
     await this.finish.click();
   }
