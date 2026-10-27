@@ -28,7 +28,7 @@ jobs:
       # Start only the services of the app's main compose file (no phpmyadmin, cron or mailcatcher)
       COMPOSE_FILE: docker-compose.yml
 
-  strategy:
+    strategy:
       fail-fast: false # one failing browser must not stop the others
       matrix:
         include:
