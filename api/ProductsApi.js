@@ -6,6 +6,7 @@ class ProductsApi {
   }
 
   list(params = {}) {
+    // 20 s limit per attempt so one hanging call cannot use up the whole test timeout
     return this.request.get('/products', { params, timeout: 20_000 });
   }
 
@@ -17,15 +18,17 @@ class ProductsApi {
     return this.request.get(`/products/${id}`);
   }
 
-  // getting the first count products of the catalogue
+  // Returns the first count products of the catalogue that can be bought.
+  // The shop disables "Add to cart" for products that are out of stock.
   async firstProducts(count = 1) {
     let products = [];
     await expect(async () => {
       const response = await this.list();
       expect(response.status(), 'GET /products did not return 200').toBe(200);
       const body = await response.json();
-      expect(body.data.length).toBeGreaterThanOrEqual(count);
-      products = body.data.slice(0, count);
+      const inStock = body.data.filter((product) => product.in_stock !== false);
+      expect(inStock.length, 'the first page has too few products in stock').toBeGreaterThanOrEqual(count);
+      products = inStock.slice(0, count);
     }).toPass({ intervals: [1_000, 2_000, 4_000], timeout: 40_000 });
     return products;
   }

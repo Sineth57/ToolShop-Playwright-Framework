@@ -37,8 +37,7 @@ test.describe('Checkout (positive)', () => {
   });
 
   test('TC178 - choosing bank transfer shows the bank detail fields', async ({ checkoutPage }) => {
-    //await checkoutPage.goToPayment(data.checkout.address);
-    await checkoutPage.goToPayment(data.checkout.addressInProfileCountry, { expectAutofill: false });
+    await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.paymentMethod.selectOption('bank-transfer');
 
     await expect(checkoutPage.bankName).toBeVisible();
@@ -47,20 +46,17 @@ test.describe('Checkout (positive)', () => {
   });
 
   test('TC179 - a bank transfer purchase shows the success message', async ({ checkoutPage }) => {
-   // await checkoutPage.goToPayment(data.checkout.address);
-    await checkoutPage.goToPayment(data.checkout.addressInProfileCountry, { expectAutofill: false });
+    await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);
 
     await expect(checkoutPage.successMessage).toBeVisible();
   });
 
   test('TC180 - the purchase creates an invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
-    
     test.fail(true, 'Known issue #844: first Confirm shows success without creating an invoice');
 
     const calls = checkoutPage.trackOrderRequests();
-   // await checkoutPage.goToPayment(data.checkout.address);
-    await checkoutPage.goToPayment(data.checkout.addressInProfileCountry, { expectAutofill: false });
+    await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);
     mark(calls, 'first Confirm clicked');
     await expect(checkoutPage.successMessage).toBeVisible();
@@ -78,8 +74,7 @@ test.describe('Checkout (positive)', () => {
 
   test('TC181 - confirming a second time creates the invoice', async ({ checkoutPage, newUser, authApi, apiRequest }) => {
     const calls = checkoutPage.trackOrderRequests();
-    //await checkoutPage.goToPayment(data.checkout.address);
-    await checkoutPage.goToPayment(data.checkout.addressInProfileCountry, { expectAutofill: false });
+    await checkoutPage.goToPayment(data.checkout.address);
     await checkoutPage.payWithBankTransfer(data.checkout.bank);
     mark(calls, 'first Confirm clicked');
     await expect(checkoutPage.successMessage).toBeVisible();
