@@ -19,27 +19,9 @@
     { "field": "email", "errorId": "email-error" },
     { "field": "password", "errorId": "password-error" }
   ],
-  "registration": {
-    "firstName": "Test",
-    "lastName": "User",
-    "dob": "1995-05-15",
-    "country": "AR",
-    "postalCode": "1000",
-    "houseNumber": "123",
-    "street": "Calle Falsa",
-    "city": "Buenos Aires",
-    "state": "Buenos Aires",
-    "phone": "0771234567",
-    "password": "Str0ng!Pass#2026"
-  },
+  "registration": { "firstName": "Test", "lastName": "User", "dob": "1995-05-15", "country": "AR", "postalCode": "1000", "houseNumber": "123", "street": "Calle Falsa", "city": "Buenos Aires", "state": "Buenos Aires", "phone": "0771234567", "password": "Str0ng!Pass#2026" },
   "weakPassword": "abc",
-  "contact": {
-    "firstName": "Test",
-    "lastName": "User",
-    "subject": "customer-service",
-    "message": "I would like to ask about the delivery time of the tools I plan to order next week.",
-    "shortMessage": "Too short"
-  },
+  "contact": { "firstName": "Test", "lastName": "User", "subject": "customer-service", "message": "I would like to ask about the delivery time of the tools I plan to order next week.", "shortMessage": "Too short" },
   "contactRequiredFields": [
     { "field": "first name", "errorId": "first-name-error", "text": "First name is required" },
     { "field": "last name", "errorId": "last-name-error", "text": "Last name is required" },
@@ -49,7 +31,6 @@
   ],
   "checkout": {
     "address": { "country": "SO", "postalCode": "32154", "houseNumber": "54" },
-    "addressInProfileCountry": { "country": "LK", "postalCode": "10100", "houseNumber": "54" },
     "bank": { "bankName": "Test Bank", "accountName": "Test Account", "accountNumber": "321654987" },
     "requiredAddressFields": [
       { "field": "postal code", "key": "postalCode" },
@@ -62,5 +43,4 @@
     { "min": 10, "max": 100 },
     { "min": 50, "max": 200 }
   ]
-
 }

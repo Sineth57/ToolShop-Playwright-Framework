@@ -1,10 +1,14 @@
 const { expect } = require('@playwright/test');
+const { buildUserPayload } = require('../utils/userFactory');
+
+// profile's own address which stays in the form until the site's address lookup replaces it
+const profileAddress = buildUserPayload().address;
 
 class CheckoutPage {
   constructor(page) {
     this.page = page;
 
-    // Step 2: sign in (shown to guests) and the "continue" button
+    // Step 2: sign in 
     this.email = page.getByTestId('email');
     this.password = page.getByTestId('password');
     this.loginSubmit = page.getByTestId('login-submit');
@@ -36,7 +40,6 @@ class CheckoutPage {
     await this.loginSubmit.click();
   }
 
- 
   async waitForFormToLoad() {
     await expect(this.postalCode).not.toHaveValue('');
   }
@@ -54,32 +57,18 @@ class CheckoutPage {
     await expect(this.houseNumber).toHaveValue(houseNumber);
   }
 
-  // async waitForValidAddress() {
-  //   await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
-  // }
-
-  
-    async waitForValidAddress() {
-    //await expect(this.city).not.toHaveValue('Colombo', { timeout: 30_000 });
+  // The site fills street, city and state from its own address lookup, and an invoice is only accepted
+  // with that address, wait until all three have replaced the profile's values
+  async waitForValidAddress() {
+    await expect(this.street).not.toHaveValue(profileAddress.street, { timeout: 30_000 });
+    await expect(this.city).not.toHaveValue(profileAddress.city, { timeout: 30_000 });
+    await expect(this.state).not.toHaveValue(profileAddress.state, { timeout: 30_000 });
     await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
   }
 
-  // async goToPayment(address) {
-  //   await this.fillBillingAddress(address);
-  //   await this.waitForValidAddress();
-  //   await this.proceedFromAddress.click();
-  //   await expect(this.paymentMethod).toBeVisible();
-  // }
-
-    // expectAutofill: false is for an address in the user's own country, where the profile's
-  // street, city and state are already valid and the site may not replace them
-  async goToPayment(address, { expectAutofill = true } = {}) {
+  async goToPayment(address) {
     await this.fillBillingAddress(address);
-    if (expectAutofill) {
-      await this.waitForValidAddress();
-    } else {
-      await expect(this.proceedFromAddress).toBeEnabled({ timeout: 30_000 });
-    }
+    await this.waitForValidAddress();
     await this.proceedFromAddress.click();
     await expect(this.paymentMethod).toBeVisible();
   }
@@ -93,23 +82,22 @@ class CheckoutPage {
   }
 
   async getPaymentMethods() {
-  await expect(this.paymentMethod).toBeVisible();
+    await expect(this.paymentMethod).toBeVisible();
 
-  return await this.paymentMethod.locator('option').evaluateAll(
-    options =>
-      options.map(option => ({
+    return await this.paymentMethod.locator('option').evaluateAll((options) =>
+      options.map((option) => ({
         text: option.textContent.trim(),
         value: option.value,
         disabled: option.disabled,
-      }))
-  );
-}
+      })),
+    );
+  }
 
   async confirm() {
     await this.finish.click();
   }
 
-  
+  // Records every payment and invoice request the page sends
   trackOrderRequests() {
     const calls = [];
     this.page.on('response', (response) => {
