@@ -9,7 +9,7 @@ module.exports = defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,       // a test that passes on retry is reported as "flaky"
-  workers: Number(process.env.WORKERS) || 2,  
+  workers: Number(process.env.WORKERS) || 2, // set WORKERS=4 (or use --workers=4) to compare speeds
 
   reporter: [
     ['list'],

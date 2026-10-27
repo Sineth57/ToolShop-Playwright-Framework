@@ -7,7 +7,7 @@ function setPath(object, path, value) {
   return object;
 }
 
-// Removes a field by path, eg. removePath(user, 'address.city')
+// Removes a field by path, e.g. removePath(user, 'address.city')
 function removePath(object, path) {
   const keys = path.split('.');
   const last = keys.pop();

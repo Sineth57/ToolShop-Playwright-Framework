@@ -1,11 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
-// add a marker line to a list of recorded requests so the report shows when each action happened
+// Adds a marker line to a list of recorded requests, so the report shows when each action happened
 function mark(calls, text) {
   calls.push({ line: `--- ${text} ---`, detail: '', ready: Promise.resolve() });
 }
 
-// attaches the recorded payment and invoice requests to the report and prints them, so they are visible when a test fails too
+// Attaches the recorded payment and invoice requests to the report and prints them,
+// so they are visible when a test fails too
 async function reportOrderRequests(calls) {
   await Promise.all(calls.map((call) => call.ready));
   const text = calls.length
